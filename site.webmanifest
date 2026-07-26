@@ -1,8 +1,8 @@
 {
   "id": "/helena-piano/",
-  "name": "Helena Piano",
+  "name": "Helena Piano · Studio",
   "short_name": "Helena Piano",
-  "description": "연주·연습 기록과 YouTube 송출을 위한 미니 스튜디오 레포.",
+  "description": "연주·연습 기록과 YouTube 송출을 위한 미니 스튜디오. Practice · Repertoire · Record · Broadcast.",
   "lang": "ko",
   "dir": "ltr",
   "start_url": "/helena-piano/",
@@ -17,9 +17,9 @@
   "background_color": "#0a0908",
   "theme_color": "#0a0908",
   "categories": [
-    "productivity",
+    "music",
     "education",
-    "utilities"
+    "entertainment"
   ],
   "prefer_related_applications": false,
   "icons": [

@@ -3,8 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Helena Piano — Helena ecosystem webzine landing">
-<meta name="theme-color" content="#0a0908">
+<meta name="description" content="Helena Piano — 연주·연습 기록과 YouTube 송출을 위한 미니 스튜디오. Practice · Repertoire · Record · Broadcast. Editorial Webzine.">
+<meta name="theme-color" content="#0a0908" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f7f1e6" media="(prefers-color-scheme: light)">
+<meta name="color-scheme" content="dark light">
 <meta name="application-name" content="Helena Piano">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -12,7 +14,11 @@
 <meta name="apple-mobile-web-app-title" content="Helena Piano">
 <meta name="msapplication-TileColor" content="#0a0908">
 <meta name="msapplication-TileImage" content="icons/icon-192.png">
-<title>Helena Piano — Webzine</title>
+<meta property="og:title" content="Helena Piano — Studio Webzine">
+<meta property="og:description" content="피아노 연습과 방송 스튜디오. 연주 기록 · 레퍼토리 · 클립 · YouTube 송출.">
+<meta property="og:image" content="https://helena751107.github.io/helena-piano/icons/icon-512.png">
+<meta property="og:type" content="website">
+<title>Helena Piano — Studio Webzine</title>
 <link rel="manifest" href="site.webmanifest">
 <link rel="icon" href="icons/favicon-32.png" type="image/png" sizes="32x32">
 <link rel="icon" href="icons/favicon-16.png" type="image/png" sizes="16x16">
@@ -20,163 +26,685 @@
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png" sizes="180x180">
 <link rel="mask-icon" href="icons/icon.svg" color="#8b7cf0">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,700;1,400&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
-:root {
-  --ink:#f4efe6; --ink-dim:#b5a999; --ink-mute:#7a7064;
-  --paper:#0a0908; --paper-2:#12100e; --paper-3:#1a1714;
-  --rule:rgba(244,239,230,.1); --rule2:rgba(244,239,230,.18);
-  --gold:#d4a84b; --gold2:#f0c75e; --teal:#3db8a8; --coral:#e85d4c; --lilac:#8b7cf0;
-  --serif:'Cormorant Garamond',serif; --sans:'DM Sans','Noto Sans KR',system-ui,sans-serif;
-  --ease:cubic-bezier(.16,1,.3,1); --accent:var(--gold);
+/* HELENA PIANO — A-grade studio webzine · lilac accent */
+:root{
+  --ink:#f4efe6;--ink-dim:#b5a999;--ink-mute:#7a7064;
+  --paper:#0a0908;--paper-2:#12100e;--paper-3:#1a1714;
+  --rule:rgba(244,239,230,.1);--rule-strong:rgba(244,239,230,.18);
+  --gold:#d4a84b;--gold-bright:#f0c75e;--crimson:#e85d4c;--teal:#3db8a8;--lilac:#8b7cf0;--lilac-bright:#a99cff;
+  --serif:'Cormorant Garamond','Times New Roman',serif;
+  --sans:'DM Sans','Noto Sans KR',system-ui,sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,monospace;
+  --max:1180px;--ease:cubic-bezier(.16,1,.3,1);--accent:var(--lilac);
 }
-[data-accent="teal"] { --accent:var(--teal); }
-[data-accent="coral"] { --accent:var(--coral); }
-[data-accent="lilac"] { --accent:var(--lilac); }
-[data-accent="gold"] { --accent:var(--gold); }
-*{box-sizing:border-box;margin:0;padding:0}
+[data-theme="light"]{
+  --ink:#1a1510;--ink-dim:#5c5348;--ink-mute:#8a8074;
+  --paper:#f7f1e6;--paper-2:#efe8db;--paper-3:#fffdf8;
+  --rule:rgba(26,21,16,.1);--rule-strong:rgba(26,21,16,.18);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
-body{font-family:var(--sans);background:var(--paper);color:var(--ink);line-height:1.65;min-height:100vh;overflow-x:hidden}
-body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
-  background:radial-gradient(ellipse 70% 50% at 20% -10%, color-mix(in srgb, var(--accent) 18%, transparent), transparent 55%),
-             radial-gradient(ellipse 50% 40% at 90% 80%, rgba(61,184,168,.06), transparent 50%)}
-a{color:var(--gold2);text-decoration:none}
-a:hover{color:var(--teal)}
-.wrap{max-width:720px;margin:0 auto;padding:0 max(16px,env(safe-area-inset-right)) 80px max(16px,env(safe-area-inset-left));position:relative;z-index:1}
-.mast{position:sticky;top:0;z-index:50;display:flex;justify-content:space-between;align-items:center;gap:12px;
-  padding:12px max(16px,env(safe-area-inset-right)) 12px max(16px,env(safe-area-inset-left));
-  padding-top:max(12px,env(safe-area-inset-top));
-  background:color-mix(in srgb,var(--paper) 88%, transparent);backdrop-filter:blur(14px);border-bottom:1px solid var(--rule)}
-.brand{font-family:var(--serif);font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:1rem}
-.brand em{font-style:italic;color:var(--accent);font-weight:400}
-.mast nav{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
-.mast nav a,.mast nav button{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-dim);
-  min-height:40px;padding:8px 10px;background:none;border:none;cursor:pointer;font-family:inherit}
-.mast nav a:hover,.mast nav button:hover{color:var(--accent)}
-.hero{padding:56px 0 28px}
-.kicker{font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:14px}
-h1{font-family:var(--serif);font-size:clamp(2.2rem,9vw,3.4rem);line-height:1.08;font-weight:600;letter-spacing:-.02em;margin-bottom:14px}
-h1 em{font-style:italic;color:var(--accent)}
-.deck{color:var(--ink-dim);font-weight:300;font-size:1.05rem;max-width:34em;border-left:2px solid var(--accent);padding-left:14px;margin-bottom:22px}
-.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px}
-.chip{display:inline-flex;align-items:center;min-height:42px;padding:8px 14px;border:1px solid var(--rule2);
-  background:var(--paper-2);color:var(--ink-dim);font-size:.82rem;transition:.25s}
-.chip:hover{border-color:var(--accent);color:var(--ink)}
-.eco{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 28px;padding:12px;border:1px dashed var(--rule);background:var(--paper-2)}
-.eco a{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-mute);padding:8px 10px;min-height:36px;display:inline-flex;align-items:center}
-.eco a:hover{color:var(--accent)}
-.acc{border-top:1px solid var(--rule)}
-.acc-h{width:100%;display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;
-  text-align:left;background:none;border:none;color:inherit;font:inherit;cursor:pointer;padding:18px 0;min-height:56px}
-.acc-h .num{font-size:.72rem;letter-spacing:.12em;color:var(--accent);font-weight:600}
-.acc-h .t{font-family:var(--serif);font-size:1.35rem;font-weight:600}
-.acc-h .ico{width:34px;height:34px;border:1px solid var(--rule2);display:grid;place-items:center;color:var(--accent);transition:transform .3s var(--ease)}
-.acc.open .acc-h .ico{transform:rotate(45deg);background:color-mix(in srgb,var(--accent) 15%, transparent)}
-.acc-b{display:grid;grid-template-rows:0fr;transition:grid-template-rows .35s var(--ease)}
-.acc.open .acc-b{grid-template-rows:1fr}
-.acc-i{overflow:hidden;min-height:0;opacity:0;transition:opacity .25s;padding-bottom:0}
-.acc.open .acc-i{opacity:1;padding-bottom:18px}
-.acc-i p{color:var(--ink-dim);font-weight:300}
-.foot{margin-top:40px;padding-top:20px;border-top:1px solid var(--rule);text-align:center;color:var(--ink-mute);font-size:.8rem}
-.foot .gold{color:var(--accent);margin-top:8px;font-weight:500}
-.giscus{min-height:120px}
-@media(max-width:520px){
-  .mast nav .hide{display:none}
-  h1{font-size:clamp(1.9rem,10vw,2.6rem)}
-  .acc-h .t{font-size:1.15rem}
+body{font-family:var(--sans);background:var(--paper);color:var(--ink);line-height:1.65;overflow-x:hidden;-webkit-font-smoothing:antialiased;cursor:none}
+@media(pointer:coarse){body{cursor:auto}.cursor,.cursor-dot{display:none!important}}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:none;cursor:none}
+@media(pointer:coarse){button{cursor:pointer}}
+::selection{background:var(--lilac);color:#0c0a14}
+
+.cursor,.cursor-dot{position:fixed;top:0;left:0;pointer-events:none;z-index:9999;border-radius:50%;transform:translate(-50%,-50%);transition:width .25s var(--ease),height .25s var(--ease),border-color .25s;mix-blend-mode:difference}
+.cursor{width:36px;height:36px;border:1px solid rgba(244,239,230,.55);opacity:.85}
+.cursor.hover{width:56px;height:56px;border-color:var(--lilac-bright)}
+.cursor-dot{width:5px;height:5px;background:var(--lilac-bright);mix-blend-mode:normal}
+
+.spine{position:fixed;left:0;top:0;bottom:0;width:3px;z-index:200;background:var(--rule)}
+.spine-fill{width:100%;height:0%;background:linear-gradient(180deg,var(--lilac),var(--gold),var(--teal));transition:height .1s linear}
+
+.masthead{position:fixed;top:0;left:0;right:0;z-index:150;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:12px;padding:12px clamp(14px,3vw,36px);padding-top:max(12px,env(safe-area-inset-top));padding-left:max(14px,env(safe-area-inset-left));padding-right:max(14px,env(safe-area-inset-right));background:color-mix(in srgb,var(--paper) 88%,transparent);backdrop-filter:blur(16px) saturate(1.2);-webkit-backdrop-filter:blur(16px) saturate(1.2);border-bottom:1px solid transparent;transition:border-color .3s;min-height:56px}
+.masthead.scrolled{border-bottom-color:var(--rule)}
+.mast-left{display:flex;align-items:center;gap:12px;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-mute);font-weight:500}
+.mast-left .issue{color:var(--lilac)}
+.mast-brand{justify-self:center;font-family:var(--serif);font-size:1.1rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap;display:flex;align-items:center;gap:10px}
+.mast-brand img{width:28px;height:28px;border-radius:6px}
+.mast-brand em{font-style:italic;color:var(--lilac);font-weight:400}
+.mast-right{justify-self:end;display:flex;align-items:center;gap:2px;flex-wrap:wrap;justify-content:flex-end}
+.mast-right a,.mast-right button{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;padding:10px 11px;color:var(--ink-dim);transition:color .2s;font-weight:500;min-height:44px;display:inline-flex;align-items:center;background:none;border:none;font-family:inherit;cursor:pointer}
+.mast-right a:hover,.mast-right button:hover{color:var(--lilac)}
+.mast-cta{background:var(--lilac)!important;color:#0c0a14!important;border-radius:2px;font-weight:600!important;padding:10px 14px!important}
+.menu-btn{display:none;font-size:1.25rem;width:44px;height:44px;min-height:44px;border:1px solid var(--rule-strong)!important;border-radius:8px;color:var(--ink);background:var(--paper-2);z-index:160}
+.nav-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:145;opacity:0;transition:opacity .25s;border:none}
+.nav-backdrop.show{display:block;opacity:1}
+
+.chapter-rail{position:fixed;right:18px;top:50%;transform:translateY(-50%);z-index:140;display:flex;flex-direction:column;gap:14px}
+.chapter-rail a{width:8px;height:8px;border-radius:50%;border:1px solid var(--ink-mute);background:transparent;position:relative;transition:.3s var(--ease)}
+.chapter-rail a.on{background:var(--lilac);border-color:var(--lilac);transform:scale(1.3)}
+.chapter-rail a span{position:absolute;right:18px;top:50%;transform:translateY(-50%);white-space:nowrap;font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-mute);opacity:0;transition:.25s;pointer-events:none}
+.chapter-rail a:hover span,.chapter-rail a.on span{opacity:1;color:var(--ink-dim)}
+
+.shell{max-width:var(--max);margin:0 auto;padding:0 clamp(18px,4vw,32px);position:relative;z-index:1}
+.chapter{padding:clamp(72px,12vw,120px) 0;border-top:1px solid var(--rule)}
+.ch-label{display:flex;align-items:baseline;gap:16px;margin-bottom:28px;font-size:.7rem;letter-spacing:.22em;text-transform:uppercase;color:var(--lilac);font-weight:600}
+.ch-label .num{font-family:var(--mono);font-size:.75rem}
+.ch-label .line{flex:1;height:1px;background:var(--rule)}
+.ch-title{font-family:var(--serif);font-size:clamp(2.2rem,5vw,3.4rem);font-weight:600;line-height:1.1;letter-spacing:-.02em;margin-bottom:16px}
+.ch-title em{font-style:italic;color:var(--lilac-bright)}
+.ch-deck{max-width:540px;color:var(--ink-dim);font-size:1.05rem;font-weight:300;margin-bottom:40px}
+
+.cover{min-height:100vh;display:grid;place-items:center;position:relative;padding:100px 0 60px;overflow:hidden}
+.cover-bg{position:absolute;inset:0;z-index:0;background:
+  radial-gradient(ellipse 80% 60% at 68% 16%,rgba(139,124,240,.16),transparent 55%),
+  radial-gradient(ellipse 50% 50% at 16% 80%,rgba(61,184,168,.07),transparent 50%),
+  radial-gradient(ellipse 40% 40% at 92% 90%,rgba(212,168,75,.06),transparent 50%)}
+.cover-noise{position:absolute;inset:0;opacity:.04;z-index:0;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.cover-inner{position:relative;z-index:1;width:100%;max-width:var(--max);margin:0 auto;padding:0 clamp(18px,4vw,32px)}
+.cover-kicker{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-mute);margin-bottom:28px}
+.cover-kicker .dot{width:6px;height:6px;border-radius:50%;background:var(--lilac);box-shadow:0 0 12px var(--lilac);animation:blink 2s infinite}
+@keyframes blink{50%{opacity:.35}}
+.cover h1{font-family:var(--serif);font-weight:700;font-size:clamp(2.7rem,9.5vw,6.4rem);line-height:.94;letter-spacing:-.03em;margin-bottom:24px}
+.cover h1 .thin{font-weight:400;font-style:italic;color:var(--lilac-bright);display:block}
+.cover h1 .line2{display:block;font-size:.68em;font-weight:500;margin-top:.06em}
+.cover-sub{max-width:520px;font-size:clamp(1rem,2vw,1.15rem);color:var(--ink-dim);font-weight:300;margin-bottom:36px;border-left:2px solid var(--lilac);padding-left:18px}
+.cover-cta{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:36px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:14px 22px;font-size:.8rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--rule-strong);transition:.35s var(--ease);background:transparent;color:var(--ink)}
+.btn-solid{background:var(--lilac);color:#0c0a14;border-color:var(--lilac)}
+.btn-solid:hover{filter:brightness(1.1);transform:translateY(-2px)}
+.btn-line:hover{border-color:var(--lilac);color:var(--lilac);transform:translateY(-2px)}
+.btn-soft{background:color-mix(in srgb,var(--lilac) 14%,var(--paper-2));border-color:color-mix(in srgb,var(--lilac) 40%,var(--rule))}
+
+/* piano keys strip */
+.keys{display:flex;height:56px;margin-bottom:40px;border:1px solid var(--rule);overflow:hidden;max-width:560px}
+.keys .w{flex:1;background:linear-gradient(180deg,#f4efe6,#e8e0d2);border-right:1px solid rgba(0,0,0,.12);position:relative;transition:background .2s}
+.keys .w:hover{background:#fff}
+.keys .b{position:absolute;width:58%;height:58%;right:-29%;top:0;background:linear-gradient(180deg,#1a1714,#0a0908);border-radius:0 0 3px 3px;z-index:2;box-shadow:0 4px 8px rgba(0,0,0,.35)}
+.keys .w.on .b, .keys .w:active{filter:brightness(1.05)}
+.keys .w.hit{background:color-mix(in srgb,var(--lilac) 25%,#f4efe6)}
+
+.cover-stats{display:grid;grid-template-columns:repeat(6,1fr);gap:1px;background:var(--rule);border:1px solid var(--rule)}
+.cover-stats .s{background:var(--paper-2);padding:20px 10px;text-align:center;transition:background .3s}
+.cover-stats .s:hover{background:var(--paper-3)}
+.cover-stats .v{font-family:var(--serif);font-size:clamp(1.5rem,3vw,2.1rem);font-weight:700;color:var(--lilac-bright);line-height:1}
+.cover-stats .l{font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-mute);margin-top:8px}
+
+.marquee-wrap{overflow:hidden;border-block:1px solid var(--rule);background:var(--paper-2);padding:14px 0}
+.marquee{display:flex;width:max-content;animation:marquee 42s linear infinite;font-size:.75rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-mute);font-weight:500}
+.marquee span{padding:0 28px;white-space:nowrap}
+.marquee span::after{content:'♪';margin-left:28px;color:var(--lilac);font-size:.75rem;vertical-align:middle}
+@keyframes marquee{to{transform:translateX(-50%)}}
+
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+
+.pillar{background:var(--paper-2);border:1px solid var(--rule);padding:26px;cursor:none;transition:.4s var(--ease);position:relative;overflow:hidden}
+@media(pointer:coarse){.pillar{cursor:pointer}}
+.pillar::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--pc,var(--lilac));opacity:.8}
+.pillar:hover,.pillar.active{border-color:var(--pc,var(--lilac));transform:translateY(-6px);box-shadow:0 28px 50px rgba(0,0,0,.35)}
+.pillar .code{font-size:.65rem;letter-spacing:.16em;text-transform:uppercase;font-weight:700;color:var(--pc,var(--lilac));margin-bottom:10px}
+.pillar h3{font-family:var(--serif);font-size:1.55rem;font-weight:600;margin-bottom:10px}
+.pillar p{color:var(--ink-dim);font-size:.9rem;font-weight:300;margin-bottom:14px}
+.pillar ul{margin:0 0 0 1.05em;color:var(--ink-dim);font-size:.85rem;font-weight:300}
+.pillar li{margin-bottom:5px}
+.meter{margin-top:16px}
+.meter-label{display:flex;justify-content:space-between;font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-mute);margin-bottom:6px}
+.meter-bar{height:4px;background:var(--rule);overflow:hidden}
+.meter-fill{height:100%;width:0;background:var(--pc,var(--lilac));transition:width 1.2s var(--ease)}
+
+.infograph-box{background:var(--paper-2);border:1px solid var(--rule);padding:clamp(20px,4vw,36px);position:relative}
+.infograph-box .hint{position:absolute;top:14px;right:16px;font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-mute)}
+.svg-arch{width:100%;height:auto;display:block;max-height:440px}
+.svg-arch .node rect{transition:fill .3s,stroke .3s,filter .3s}
+.svg-arch .node:hover rect,.svg-arch .node.active rect{fill:rgba(139,124,240,.14);stroke:var(--lilac);filter:drop-shadow(0 0 8px rgba(139,124,240,.35))}
+.svg-arch .node:hover text,.svg-arch .node.active text{fill:var(--lilac-bright)}
+.svg-arch .flow{stroke-dasharray:6 6;animation:dash 16s linear infinite}
+@keyframes dash{to{stroke-dashoffset:-120}}
+.tooltip{position:absolute;pointer-events:none;z-index:10;background:var(--paper-3);border:1px solid var(--lilac);padding:12px 14px;max-width:260px;opacity:0;transform:translateY(6px);transition:opacity .2s,transform .2s;font-size:.82rem;box-shadow:0 12px 40px rgba(0,0,0,.4)}
+.tooltip.show{opacity:1;transform:none}
+.tooltip strong{display:block;font-family:var(--serif);font-size:1.05rem;margin-bottom:4px;color:var(--lilac-bright)}
+.tooltip span{color:var(--ink-dim);font-weight:300;line-height:1.45}
+
+.method-steps{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:28px}
+.m-step{background:var(--paper-2);border:1px solid var(--rule);padding:18px 14px;transition:.35s var(--ease);cursor:none;min-height:140px}
+@media(pointer:coarse){.m-step{cursor:pointer}}
+.m-step:hover,.m-step.active{border-color:var(--lilac);transform:translateY(-4px);box-shadow:0 16px 40px rgba(0,0,0,.3)}
+.m-step .n{font-family:var(--serif);font-size:1.8rem;color:var(--lilac);line-height:1;margin-bottom:8px}
+.m-step .en{font-family:var(--mono);font-size:.65rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-mute);margin-bottom:6px}
+.m-step .ko{font-weight:600;font-size:.95rem;margin-bottom:8px}
+.m-step .d{font-size:.78rem;color:var(--ink-dim);font-weight:300;line-height:1.45}
+.method-panel{background:var(--paper-2);border:1px solid var(--rule);padding:28px;min-height:150px;border-left:3px solid var(--lilac)}
+.method-panel h3{font-family:var(--serif);font-size:1.5rem;margin-bottom:10px}
+.method-panel p{color:var(--ink-dim);font-weight:300;font-size:.95rem}
+
+.chan{background:var(--paper-2);border:1px solid var(--rule);padding:24px;transition:.35s var(--ease);display:flex;flex-direction:column;gap:12px}
+.chan:hover{border-color:var(--lilac);transform:translateY(-4px);box-shadow:0 20px 48px rgba(0,0,0,.3)}
+.chan .eyebrow{font-size:.65rem;letter-spacing:.14em;text-transform:uppercase;color:var(--lilac);font-weight:600}
+.chan h3{font-family:var(--serif);font-size:1.45rem;font-weight:600}
+.chan p{color:var(--ink-dim);font-weight:300;font-size:.9rem;flex:1}
+.chan .link{font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;font-weight:600;color:var(--lilac-bright)}
+
+.ed-card{background:var(--paper-2);border:1px solid var(--rule);padding:28px;transition:.35s var(--ease)}
+.ed-card:hover{border-color:var(--rule-strong);transform:translateY(-3px)}
+.ed-card .eyebrow{font-size:.65rem;letter-spacing:.16em;text-transform:uppercase;color:var(--lilac);margin-bottom:12px;font-weight:600}
+.ed-card h3{font-family:var(--serif);font-size:1.5rem;font-weight:600;margin-bottom:12px}
+.ed-card p{color:var(--ink-dim);font-weight:300;font-size:.95rem}
+.tag{font-size:.65rem;letter-spacing:.06em;text-transform:uppercase;padding:4px 10px;border:1px solid var(--rule);color:var(--ink-mute);font-weight:500;display:inline-block}
+.tag.lilac{border-color:rgba(139,124,240,.45);color:var(--lilac)}
+.tag.ok{border-color:rgba(61,184,168,.4);color:var(--teal)}
+.tag.gold{border-color:rgba(212,168,75,.45);color:var(--gold)}
+
+.ibar{display:flex;flex-direction:column;gap:12px;margin-top:18px}
+.ibar-row{display:grid;grid-template-columns:100px 1fr 48px;gap:12px;align-items:center}
+.ibar-row .n{color:var(--ink-mute);text-align:right;font-size:.72rem}
+.ibar-row .t{height:6px;background:var(--rule);overflow:hidden}
+.ibar-row .f{height:100%;width:0;transition:width 1.4s var(--ease)}
+.ibar-row .p{font-family:var(--mono);font-size:.72rem;color:var(--ink-dim)}
+
+.install-box{background:var(--paper-2);border:1px solid var(--rule);padding:28px;display:grid;gap:16px}
+.install-box code{font-family:var(--mono);font-size:.85rem;color:var(--lilac);background:var(--paper);padding:14px 16px;border:1px solid var(--rule);display:block;overflow-x:auto}
+.eco-bar{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px;padding:14px;border:1px dashed var(--rule);background:var(--paper-2)}
+.eco-bar a{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-mute);padding:8px 12px;min-height:36px;display:inline-flex;align-items:center}
+.eco-bar a:hover,.eco-bar a.on{color:var(--lilac)}
+.note{margin-top:28px;padding:16px 18px;border:1px solid var(--rule-strong);background:color-mix(in srgb,var(--lilac) 8%,var(--paper-2));font-size:.88rem;color:var(--ink-dim);font-weight:300}
+.note strong{color:var(--lilac-bright);font-weight:600}
+
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+.reveal.in{opacity:1;transform:none}
+.reveal-d1{transition-delay:.08s}.reveal-d2{transition-delay:.16s}.reveal-d3{transition-delay:.24s}
+
+.site-foot{border-top:1px solid var(--rule);padding:48px 0 80px;text-align:center;color:var(--ink-mute);font-size:.82rem}
+.site-foot .gold{color:var(--lilac);margin-top:8px;font-weight:500}
+.to-top{position:fixed;right:18px;bottom:22px;z-index:160;width:44px;height:44px;border:1px solid var(--rule-strong);background:var(--paper-2);border-radius:50%;opacity:0;pointer-events:none;transition:.3s;color:var(--ink);display:grid;place-items:center;font-size:1.1rem}
+.to-top.show{opacity:1;pointer-events:auto}
+
+@media(max-width:900px){
+  .g3,.g4,.cover-stats{grid-template-columns:repeat(2,1fr)}
+  .method-steps{grid-template-columns:repeat(2,1fr)}
+  .method-steps .m-step:last-child{grid-column:1/-1}
+  .chapter-rail{display:none}
+  .menu-btn{display:grid;place-items:center}
+  .masthead{grid-template-columns:1fr auto}
+  .mast-brand{justify-self:start}
+  .mast-left{display:none}
+  .mast-right{position:fixed;top:0;right:0;bottom:0;width:min(300px,86vw);background:var(--paper-2);border-left:1px solid var(--rule);flex-direction:column;align-items:stretch;justify-content:flex-start;padding:72px 16px 24px;gap:4px;transform:translateX(105%);transition:transform .3s var(--ease);z-index:155}
+  .mast-right.open{transform:translateX(0)}
+  .mast-right a,.mast-right button{justify-content:flex-start;width:100%;padding:14px 12px}
+}
+@media(max-width:640px){
+  .g2,.g3,.g4{grid-template-columns:1fr}
+  .cover-stats{grid-template-columns:repeat(2,1fr)}
+  .method-steps{grid-template-columns:1fr}
+  .method-steps .m-step:last-child{grid-column:auto}
+  .cover h1{font-size:clamp(2.3rem,11vw,3.4rem)}
+  .ibar-row{grid-template-columns:80px 1fr 40px}
+  .infograph-box .hint{display:none}
+  .keys{height:44px}
+}
+@media(prefers-reduced-motion:reduce){
+  .marquee,.svg-arch .flow,.reveal{animation:none!important;transition:none!important}
+  .reveal{opacity:1;transform:none}
 }
 </style>
 </head>
-<body data-accent="lilac">
-<header class="mast">
-  <a class="brand" href="./">Helena <em>Piano</em></a>
-  <nav>
-    <a class="hide" href="https://helena751107.github.io/helena_phone/">Hub</a>
-    <a href="https://github.com/helena751107/helena-piano">GitHub</a>
-    <button type="button" id="themeBtn">Theme</button>
-  </nav>
+<body>
+<div class="cursor" id="cursor" aria-hidden="true"></div>
+<div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
+<div class="spine" aria-hidden="true"><div class="spine-fill" id="spineFill"></div></div>
+<button type="button" class="to-top" id="toTop" aria-label="맨 위로">↑</button>
+
+<header class="masthead" id="masthead">
+  <div class="mast-left"><span class="issue">Vol. Studio</span><span>Piano</span></div>
+  <a class="mast-brand" href="./" data-cursor>
+    <img src="icons/favicon-32.png" width="28" height="28" alt="">
+    Helena <em>Piano</em>
+  </a>
+  <div style="justify-self:end;display:flex;align-items:center;gap:8px">
+    <button type="button" class="menu-btn" id="menuBtn" aria-label="메뉴" aria-expanded="false">☰</button>
+    <nav class="mast-right" id="mastRight">
+      <a href="#pillars" data-cursor>Studio</a>
+      <a href="#map" data-cursor>Map</a>
+      <a href="#method" data-cursor>Pipeline</a>
+      <a href="#channels" data-cursor>Channels</a>
+      <a href="#session" data-cursor>Session</a>
+      <a href="https://www.youtube.com/@helena_phone" target="_blank" rel="noopener" data-cursor>YouTube</a>
+      <button type="button" id="themeBtn" data-cursor>Theme</button>
+      <a class="mast-cta" href="#install" data-cursor>Install</a>
+    </nav>
+  </div>
 </header>
-<main class="wrap">
-  <section class="hero">
-    <div class="kicker">Piano · Practice · YouTube</div>
-    <h1>피아노 연습과<br><em>방송</em> 스튜디오.</h1>
-    <p class="deck">연주·연습 기록과 YouTube 송출을 위한 미니 스튜디오 레포.</p>
-    <div class="chips"><a class="chip" href="https://github.com/helena751107/helena-piano" target="_blank" rel="noopener">GitHub</a><a class="chip" href="https://helena751107.github.io/helena_phone/" target="_blank" rel="noopener">S21 Phone Hub</a><a class="chip" href="https://www.youtube.com/@helena_phone" target="_blank" rel="noopener">YouTube</a></div>
-    
-  <div class="eco">
+<div class="nav-backdrop" id="navBackdrop"></div>
+
+<nav class="chapter-rail" aria-label="챕터">
+  <a href="#cover" data-ch="cover" class="on"><span>Cover</span></a>
+  <a href="#pillars" data-ch="pillars"><span>Studio</span></a>
+  <a href="#map" data-ch="map"><span>Map</span></a>
+  <a href="#method" data-ch="method"><span>Pipeline</span></a>
+  <a href="#channels" data-ch="channels"><span>Channels</span></a>
+  <a href="#session" data-ch="session"><span>Session</span></a>
+  <a href="#rhythm" data-ch="rhythm"><span>Rhythm</span></a>
+  <a href="#install" data-ch="install"><span>Install</span></a>
+</nav>
+
+<section class="cover" id="cover">
+  <div class="cover-bg"></div>
+  <div class="cover-noise"></div>
+  <div class="cover-inner">
+    <div class="cover-kicker">
+      <span class="dot"></span>
+      <span>Practice · Record · Broadcast</span>
+      <span>Mini studio on S21</span>
+      <span>Webzine Vol.01</span>
+    </div>
+    <h1>
+      KEYS TO AIR.
+      <span class="thin">Practice room.</span>
+      <span class="line2">Broadcast desk.</span>
+    </h1>
+    <p class="cover-sub">
+      피아노 연습과 방송 스튜디오.
+      연주 기록 · 레퍼토리 · 클립 캡처 · YouTube 송출을
+      한 레포·한 폰 워크스테이션에서 잇습니다.
+    </p>
+    <div class="cover-cta">
+      <a class="btn btn-solid" href="#pillars" data-cursor>Enter studio</a>
+      <a class="btn btn-line" href="#method" data-cursor>See pipeline</a>
+      <a class="btn btn-soft" href="https://www.youtube.com/@helena_phone" target="_blank" rel="noopener" data-cursor>YouTube</a>
+    </div>
+    <div class="keys" id="pianoKeys" aria-hidden="true">
+      <div class="w"><span class="b"></span></div>
+      <div class="w"><span class="b"></span></div>
+      <div class="w"></div>
+      <div class="w"><span class="b"></span></div>
+      <div class="w"><span class="b"></span></div>
+      <div class="w"><span class="b"></span></div>
+      <div class="w"></div>
+      <div class="w"><span class="b"></span></div>
+      <div class="w"><span class="b"></span></div>
+      <div class="w"></div>
+      <div class="w"><span class="b"></span></div>
+      <div class="w"></div>
+    </div>
+    <div class="cover-stats">
+      <div class="s"><div class="v" data-count="4">0</div><div class="l">Pillars</div></div>
+      <div class="s"><div class="v" data-count="5">0</div><div class="l">Pipeline</div></div>
+      <div class="s"><div class="v" data-count="3">0</div><div class="l">Outputs</div></div>
+      <div class="s"><div class="v" data-count="88">0</div><div class="l">Keys*</div></div>
+      <div class="s"><div class="v" data-count="1">0</div><div class="l">Phone</div></div>
+      <div class="s"><div class="v" data-count="0">0</div><div class="l">SW</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="marquee-wrap" aria-hidden="true">
+  <div class="marquee">
+    <span>Practice</span><span>Repertoire</span><span>Record</span><span>Broadcast</span><span>Termux</span><span>YouTube</span><span>Clip</span><span>Metronome</span><span>Helena Piano</span><span>S21 Studio</span>
+    <span>Practice</span><span>Repertoire</span><span>Record</span><span>Broadcast</span><span>Termux</span><span>YouTube</span><span>Clip</span><span>Metronome</span><span>Helena Piano</span><span>S21 Studio</span>
+  </div>
+</div>
+
+<main>
+<section class="chapter shell" id="pillars">
+  <div class="ch-label"><span class="num">01</span><span>Studio pillars</span><span class="line"></span></div>
+  <h2 class="ch-title">네 구역 · <em>미니 스튜디오</em></h2>
+  <p class="ch-deck">카드를 누르면 해당 구역의 무게가 채워집니다. 연습실과 방송 데스크가 한 집입니다.</p>
+  <div class="g2">
+    <article class="pillar reveal active" data-cursor style="--pc:var(--lilac)" data-w="90">
+      <div class="code">01 · Practice</div>
+      <h3>연습</h3>
+      <p>손·귀·시간을 남기는 구역. 완벽보다 반복 로그.</p>
+      <ul><li>세션 시간 · 템포 메모</li><li>막힌 마디 표시</li><li>S21 타이머·메트로 병행</li></ul>
+      <div class="meter"><div class="meter-label"><span>Focus</span><span>90%</span></div><div class="meter-bar"><div class="meter-fill" data-w="90"></div></div></div>
+    </article>
+    <article class="pillar reveal reveal-d1" data-cursor style="--pc:var(--gold)" data-w="82">
+      <div class="code">02 · Repertoire</div>
+      <h3>레퍼토리</h3>
+      <p>지금 올리는 곡, 다음에 올릴 곡. 목록이 곧 방송 계획.</p>
+      <ul><li>곡 카드 · 난이도</li><li>공개/연습 전용 구분</li><li>Faith 축과 교차 가능</li></ul>
+      <div class="meter"><div class="meter-label"><span>Focus</span><span>82%</span></div><div class="meter-bar"><div class="meter-fill" data-w="82"></div></div></div>
+    </article>
+    <article class="pillar reveal reveal-d2" data-cursor style="--pc:var(--teal)" data-w="86">
+      <div class="code">03 · Record</div>
+      <h3>녹음</h3>
+      <p>클립 캡처. 폰 한 대로 충분한 미니 세션 테이크.</p>
+      <ul><li>오디오/영상 테이크</li><li>파일 이름 규칙</li><li>termux-setup · youtube/</li></ul>
+      <div class="meter"><div class="meter-label"><span>Focus</span><span>86%</span></div><div class="meter-bar"><div class="meter-fill" data-w="86"></div></div></div>
+    </article>
+    <article class="pillar reveal reveal-d3" data-cursor style="--pc:var(--crimson)" data-w="88">
+      <div class="code">04 · Broadcast</div>
+      <h3>송출</h3>
+      <p>YouTube로 내보내는 마지막 문. 짧거나 길게.</p>
+      <ul><li>쇼츠 / 장문 연주</li><li>제목·썸네일 시안 (_Grok)</li><li>허브 퍼널과 연결</li></ul>
+      <div class="meter"><div class="meter-label"><span>Focus</span><span>88%</span></div><div class="meter-bar"><div class="meter-fill" data-w="88"></div></div></div>
+    </article>
+  </div>
+</section>
+
+<section class="chapter shell" id="map">
+  <div class="ch-label"><span class="num">02</span><span>Infographic</span><span class="line"></span></div>
+  <h2 class="ch-title">건반에서 <em>공중파</em>까지</h2>
+  <p class="ch-deck">노드를 호버·탭하면 설명이 열립니다. 점선은 연습→송출 흐름입니다.</p>
+  <div class="infograph-box reveal" id="archBox">
+    <span class="hint">Hover / tap nodes</span>
+    <div class="tooltip" id="archTip"></div>
+    <svg class="svg-arch" viewBox="0 0 960 420" role="img" aria-label="피아노 스튜디오 파이프라인 지도">
+      <defs>
+        <linearGradient id="pg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#8b7cf0"/><stop offset="100%" stop-color="#a99cff"/></linearGradient>
+      </defs>
+      <path class="flow" d="M180 100 C300 100, 320 200, 480 200" fill="none" stroke="#8b7cf0" stroke-width="1.5" opacity=".55"/>
+      <path class="flow" d="M480 80 C480 120, 480 160, 480 200" fill="none" stroke="#d4a84b" stroke-width="1.5" opacity=".5"/>
+      <path class="flow" d="M780 100 C660 100, 640 200, 480 200" fill="none" stroke="#3db8a8" stroke-width="1.5" opacity=".5"/>
+      <path class="flow" d="M480 250 C360 300, 260 320, 180 345" fill="none" stroke="#e85d4c" stroke-width="1.2" opacity=".45"/>
+      <path class="flow" d="M480 250 C600 300, 700 320, 780 345" fill="none" stroke="#d4a84b" stroke-width="1.2" opacity=".45"/>
+      <path class="flow" d="M480 250 C480 300, 480 320, 480 360" fill="none" stroke="#8b7cf0" stroke-width="1.2" opacity=".4"/>
+
+      <g class="node" data-tip="연습 Practice|세션 로그·템포·막힌 마디. 스튜디오의 바닥." data-cursor>
+        <rect x="60" y="55" width="240" height="90" rx="10" fill="#12100e" stroke="#8b7cf0" stroke-width="1.5"/>
+        <text x="180" y="100" text-anchor="middle" fill="#8b7cf0" font-family="DM Sans,sans-serif" font-size="15" font-weight="600">연습 Practice</text>
+        <text x="180" y="122" text-anchor="middle" fill="#7a7064" font-family="DM Sans,sans-serif" font-size="12">Session · Tempo</text>
+      </g>
+      <g class="node" data-tip="레퍼토리 Repertoire|올릴 곡 목록. 방송 캘린더의 씨앗." data-cursor>
+        <rect x="360" y="30" width="240" height="90" rx="10" fill="#12100e" stroke="#d4a84b" stroke-width="1.5"/>
+        <text x="480" y="75" text-anchor="middle" fill="#d4a84b" font-family="DM Sans,sans-serif" font-size="15" font-weight="600">레퍼토리 List</text>
+        <text x="480" y="97" text-anchor="middle" fill="#7a7064" font-family="DM Sans,sans-serif" font-size="12">Pieces · Plan</text>
+      </g>
+      <g class="node" data-tip="녹음 Record|테이크 캡처. 폰 마이크·외부 입력." data-cursor>
+        <rect x="660" y="55" width="240" height="90" rx="10" fill="#12100e" stroke="#3db8a8" stroke-width="1.5"/>
+        <text x="780" y="100" text-anchor="middle" fill="#3db8a8" font-family="DM Sans,sans-serif" font-size="15" font-weight="600">녹음 Record</text>
+        <text x="780" y="122" text-anchor="middle" fill="#7a7064" font-family="DM Sans,sans-serif" font-size="12">Take · Clip</text>
+      </g>
+
+      <g class="node" data-tip="Helena Piano|미니 스튜디오 허브. 연습실=방송 데스크." data-cursor>
+        <rect x="300" y="180" width="360" height="100" rx="12" fill="#100f16" stroke="url(#pg)" stroke-width="2"/>
+        <text x="480" y="228" text-anchor="middle" fill="#f4efe6" font-family="Cormorant Garamond,serif" font-size="28" font-weight="600">HELENA PIANO</text>
+        <text x="480" y="254" text-anchor="middle" fill="#7a7064" font-family="DM Sans,sans-serif" font-size="12">Mini studio · One phone</text>
+      </g>
+
+      <g class="node" data-tip="YouTube|송출. 쇼츠·연주 영상." data-cursor>
+        <rect x="60" y="320" width="240" height="64" rx="8" fill="#12100e" stroke="#e85d4c" stroke-width="1.2"/>
+        <text x="180" y="358" text-anchor="middle" fill="#e85d4c" font-family="DM Sans,sans-serif" font-size="14" font-weight="600">YouTube</text>
+      </g>
+      <g class="node" data-tip="Pages|이 웹진·설치 아이콘·문서." data-cursor>
+        <rect x="360" y="330" width="240" height="64" rx="8" fill="#12100e" stroke="#8b7cf0" stroke-width="1.2"/>
+        <text x="480" y="368" text-anchor="middle" fill="#8b7cf0" font-family="DM Sans,sans-serif" font-size="14" font-weight="600">Pages · Hub</text>
+      </g>
+      <g class="node" data-tip="Archive|테이크·메모 보존. youtube/ · logs." data-cursor>
+        <rect x="660" y="320" width="240" height="64" rx="8" fill="#12100e" stroke="#d4a84b" stroke-width="1.2"/>
+        <text x="780" y="358" text-anchor="middle" fill="#d4a84b" font-family="DM Sans,sans-serif" font-size="14" font-weight="600">Archive</text>
+      </g>
+    </svg>
+  </div>
+</section>
+
+<section class="chapter shell" id="method">
+  <div class="ch-label"><span class="num">03</span><span>Pipeline</span><span class="line"></span></div>
+  <h2 class="ch-title">송출 <em>파이프</em> 5단</h2>
+  <p class="ch-deck">단계를 누르면 패널이 바뀝니다. 디자이너 시안 → 반장 시공 리듬과 맞춥니다.</p>
+  <div class="method-steps">
+    <div class="m-step active reveal" data-m="0" data-cursor><div class="n">01</div><div class="en">Warm</div><div class="ko">워밍업</div><div class="d">손·귀 깨우기.</div></div>
+    <div class="m-step reveal reveal-d1" data-m="1" data-cursor><div class="n">02</div><div class="en">Work</div><div class="ko">집중</div><div class="d">막힌 마디 공략.</div></div>
+    <div class="m-step reveal reveal-d2" data-m="2" data-cursor><div class="n">03</div><div class="en">Take</div><div class="ko">테이크</div><div class="d">한 번에 찍기.</div></div>
+    <div class="m-step reveal reveal-d3" data-m="3" data-cursor><div class="n">04</div><div class="en">Shape</div><div class="ko">다듬기</div><div class="d">컷·제목·썸네일.</div></div>
+    <div class="m-step reveal" data-m="4" data-cursor><div class="n">05</div><div class="en">Air</div><div class="ko">송출</div><div class="d">YouTube로.</div></div>
+  </div>
+  <div class="method-panel reveal" id="methodPanel">
+    <h3>01 · 워밍업 Warm</h3>
+    <p>스케일·아르페지오·쉬운 프레이즈로 손을 엽니다. 로그에 “워밍 분”만 적어도 됩니다.</p>
+  </div>
+</section>
+
+<section class="chapter shell" id="channels">
+  <div class="ch-label"><span class="num">04</span><span>Channels</span><span class="line"></span></div>
+  <h2 class="ch-title">나가는 <em>문</em></h2>
+  <p class="ch-deck">같은 건반, 다른 문. 연습 기록과 방송은 목적을 섞지 않습니다.</p>
+  <div class="g3">
+    <article class="chan reveal" data-cursor>
+      <div class="eyebrow">Broadcast</div>
+      <h3>YouTube</h3>
+      <p>연주·연습 브이로그·쇼츠. 생태계 방송탑과 연결.</p>
+      <a class="link" href="https://www.youtube.com/@helena_phone" target="_blank" rel="noopener" data-cursor>@helena_phone →</a>
+    </article>
+    <article class="chan reveal reveal-d1" data-cursor>
+      <div class="eyebrow">Workstation</div>
+      <h3>S21 · Termux</h3>
+      <p>termux-setup.sh, 폰 헬스, 업로드 스크립트 레인.</p>
+      <a class="link" href="https://helena751107.github.io/helena_phone/" data-cursor>Phone Hub →</a>
+    </article>
+    <article class="chan reveal reveal-d2" data-cursor>
+      <div class="eyebrow">Source</div>
+      <h3>GitHub · Pages</h3>
+      <p>이 웹진, 아이콘, youtube/ 폴더. SSOT 위성.</p>
+      <a class="link" href="https://github.com/helena751107/helena-piano" target="_blank" rel="noopener" data-cursor>Repo →</a>
+    </article>
+  </div>
+</section>
+
+<section class="chapter shell" id="session">
+  <div class="ch-label"><span class="num">05</span><span>Session card</span><span class="line"></span></div>
+  <h2 class="ch-title">연습 <em>카드</em> 템플릿</h2>
+  <p class="ch-deck">한 세션을 네 칸으로. 나중에 대화록·방송 기획에 재사용.</p>
+  <div class="g2">
+    <div class="ed-card reveal">
+      <div class="eyebrow">Template</div>
+      <h3>오늘 세션</h3>
+      <p style="margin-bottom:10px"><strong style="color:var(--ink)">곡</strong> · (제목 / 악장)</p>
+      <p style="margin-bottom:10px"><strong style="color:var(--ink)">분</strong> · 워밍 __ / 집중 __ / 테이크 __</p>
+      <p style="margin-bottom:10px"><strong style="color:var(--ink)">막힘</strong> · 마디 · 원인 한 줄</p>
+      <p><strong style="color:var(--ink)">다음</strong> · 48시간 안 한 가지만</p>
+    </div>
+    <div class="ed-card reveal reveal-d1">
+      <div class="eyebrow">Tone</div>
+      <h3>스튜디오 예의</h3>
+      <p style="margin-bottom:12px">연습 실패를 콘텐츠로 조롱하지 않습니다. 과시보다 손의 정직. 돌봄 일정(트랙1)이 있으면 방송 일정보다 앞섭니다.</p>
+      <span class="tag lilac">큰누나 명의</span>
+      <span class="tag ok">Practice first</span>
+      <span class="tag gold">_Grok design</span>
+    </div>
+  </div>
+</section>
+
+<section class="chapter shell" id="rhythm">
+  <div class="ch-label"><span class="num">06</span><span>Rhythm</span><span class="line"></span></div>
+  <h2 class="ch-title">주간 <em>연습 호흡</em></h2>
+  <p class="ch-deck">스크롤하면 바가 찹니다. 숫자는 목표 비중 스케치입니다.</p>
+  <div class="ed-card reveal">
+    <div class="eyebrow">Weekly balance</div>
+    <h3>어디에 손을 두나</h3>
+    <div class="ibar" id="gapBars">
+      <div class="ibar-row"><span class="n">연습</span><div class="t"><div class="f" data-pct="40" style="background:var(--lilac)"></div></div><span class="p">40%</span></div>
+      <div class="ibar-row"><span class="n">레퍼토리</span><div class="t"><div class="f" data-pct="15" style="background:var(--gold)"></div></div><span class="p">15%</span></div>
+      <div class="ibar-row"><span class="n">녹음</span><div class="t"><div class="f" data-pct="20" style="background:var(--teal)"></div></div><span class="p">20%</span></div>
+      <div class="ibar-row"><span class="n">송출</span><div class="t"><div class="f" data-pct="15" style="background:var(--crimson)"></div></div><span class="p">15%</span></div>
+      <div class="ibar-row"><span class="n">쉼</span><div class="t"><div class="f" data-pct="10" style="background:var(--lilac-bright)"></div></div><span class="p">10%</span></div>
+    </div>
+  </div>
+  <div class="note reveal">
+    <strong>안내.</strong> 여기는 연주 교육 대행·악보 불법 공유 공간이 아닙니다.
+    저작권이 있는 악보·음원은 합법적 경로만 사용하세요.
+    모든 공개 계정은 큰누나 명의입니다.
+  </div>
+</section>
+
+<section class="chapter shell" id="install">
+  <div class="ch-label"><span class="num">07</span><span>Install</span><span class="line"></span></div>
+  <h2 class="ch-title">홈 화면에 <em>붙이기</em></h2>
+  <p class="ch-deck">서비스 워커 없음. manifest + 라일락 P 모노그램.</p>
+  <div class="install-box reveal">
+    <div>
+      <span class="tag ok">No service worker</span>
+      <span class="tag lilac">standalone</span>
+      <span class="tag gold">Helena Piano</span>
+    </div>
+    <p style="color:var(--ink-dim);font-weight:300">이 페이지 → 브라우저 메뉴 → <strong style="color:var(--ink)">홈 화면에 추가 / 앱 설치</strong>.</p>
+    <code>site.webmanifest · /helena-piano/icons/icon-192|512.png</code>
+    <div style="display:flex;flex-wrap:wrap;gap:10px">
+      <a class="btn btn-solid" href="site.webmanifest" data-cursor>Open manifest</a>
+      <a class="btn btn-line" href="https://github.com/helena751107/helena-piano" target="_blank" rel="noopener" data-cursor>GitHub</a>
+      <a class="btn btn-line" href="https://helena751107.github.io/helena_phone/" data-cursor>S21 Hub</a>
+      <a class="btn btn-soft" href="https://www.youtube.com/@helena_phone" target="_blank" rel="noopener" data-cursor>YouTube</a>
+    </div>
+  </div>
+  <div class="eco-bar reveal">
     <a href="https://helena751107.github.io/helena_phone/">S21 Phone</a>
     <a href="https://helena751107.github.io/helana_log/">Log</a>
     <a href="https://helena751107.github.io/helana-faith/">Faith</a>
-    <a href="https://helena751107.github.io/helena-piano/">Piano</a>
+    <a class="on" href="./">Piano</a>
     <a href="https://helena751107.github.io/helena-psycare/">PsyCare</a>
   </div>
-  </section>
-  
-    <section class="acc open" data-acc>
-      <button class="acc-h" type="button" aria-expanded="true">
-        <span class="num">01</span>
-        <span class="t">개요</span>
-        <span class="ico" aria-hidden="true">+</span>
-      </button>
-      <div class="acc-b"><div class="acc-i"><p>피아노 관련 콘텐츠, 연습 로그, 영상 파이프라인을 담습니다.</p></div></div>
-    </section>
-    <section class="acc" data-acc>
-      <button class="acc-h" type="button" aria-expanded="false">
-        <span class="num">02</span>
-        <span class="t">도구</span>
-        <span class="ico" aria-hidden="true">+</span>
-      </button>
-      <div class="acc-b"><div class="acc-i"><p>termux-setup.sh · youtube/ 디렉터리 · S21 폰 워크스테이션 연동.</p></div></div>
-    </section>
-    <section class="acc" data-acc>
-      <button class="acc-h" type="button" aria-expanded="false">
-        <span class="num">03</span>
-        <span class="t">퍼널</span>
-        <span class="ico" aria-hidden="true">+</span>
-      </button>
-      <div class="acc-b"><div class="acc-i"><p>연습 클립 → YouTube · 웹진 티저와 연결 가능.</p></div></div>
-    </section>
-  
-  <footer class="foot">
-    <div>Helena Piano · Webzine landing</div>
-    <div class="gold">모든 계정은 큰누나 명의입니다.</div>
-    <p style="margin-top:12px"><a href="https://helena751107.github.io/helena_phone/">← S21 Phone Hub</a></p>
-  </footer>
+</section>
 </main>
+
+<footer class="site-foot shell">
+  <div>Helena Piano · Studio Webzine</div>
+  <div class="gold">연습 · 레퍼토리 · 녹음 · 송출 — 건반에서 공중까지.</div>
+  <div style="margin-top:6px">모든 계정은 큰누나 명의입니다. · design _Grok</div>
+  <p style="margin-top:16px"><a href="https://helena751107.github.io/helena_phone/" data-cursor>← S21 Phone Hub</a></p>
+</footer>
+
 <script>
 (() => {
+  const $ = (s, r=document) => r.querySelector(s);
+  const $$ = (s, r=document) => [...r.querySelectorAll(s)];
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const coarse = matchMedia('(pointer: coarse)').matches;
+
+  const cur = $('#cursor'), dot = $('#cursorDot');
+  let mx = innerWidth/2, my = innerHeight/2, cx = mx, cy = my;
+  if (!coarse && cur && dot) {
+    addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; dot.style.left=mx+'px'; dot.style.top=my+'px'; }, {passive:true});
+    (function loop(){ cx+=(mx-cx)*.18; cy+=(my-cy)*.18; cur.style.left=cx+'px'; cur.style.top=cy+'px'; requestAnimationFrame(loop); })();
+    const setHover = on => cur.classList.toggle('hover', on);
+    $$('a,button,[data-cursor],.pillar,.m-step,.node,.chan,.keys .w').forEach(el => {
+      el.addEventListener('mouseenter', () => setHover(true));
+      el.addEventListener('mouseleave', () => setHover(false));
+    });
+  }
+
+  /* playful keys */
+  $$('#pianoKeys .w').forEach((k,i) => {
+    const hit = () => {
+      k.classList.add('hit');
+      setTimeout(() => k.classList.remove('hit'), 180);
+    };
+    k.addEventListener('pointerdown', hit);
+  });
+  if (!reduce) {
+    let i = 0;
+    const keys = $$('#pianoKeys .w');
+    setInterval(() => {
+      if (!keys.length) return;
+      keys[i % keys.length].classList.add('hit');
+      const cur = keys[i % keys.length];
+      setTimeout(() => cur.classList.remove('hit'), 160);
+      i++;
+    }, 900);
+  }
+
+  const spine = $('#spineFill'), mast = $('#masthead'), toTop = $('#toTop');
+  addEventListener('scroll', () => {
+    const max = document.documentElement.scrollHeight - innerHeight;
+    if (spine) spine.style.height = (max>0 ? (scrollY/max)*100 : 0) + '%';
+    mast?.classList.toggle('scrolled', scrollY > 40);
+    toTop?.classList.toggle('show', scrollY > 600);
+    let curId = 'cover';
+    $$('section[id]').forEach(s => { if (s.getBoundingClientRect().top < innerHeight*0.35) curId = s.id; });
+    $$('.chapter-rail a').forEach(a => a.classList.toggle('on', a.dataset.ch === curId));
+  }, {passive:true});
+  toTop && (toTop.onclick = () => scrollTo({top:0,behavior:'smooth'}));
+
   const root = document.documentElement;
-  const saved = localStorage.getItem('s21-sat-theme');
+  const saved = localStorage.getItem('helena-piano-wz-theme');
   if (saved) root.setAttribute('data-theme', saved);
-  // light vars
-  const apply = () => {
-    if (root.getAttribute('data-theme') === 'light') {
-      root.style.setProperty('--ink','#1a1510');
-      root.style.setProperty('--ink-dim','#5c5348');
-      root.style.setProperty('--ink-mute','#8a8074');
-      root.style.setProperty('--paper','#f7f1e6');
-      root.style.setProperty('--paper-2','#efe8db');
-      root.style.setProperty('--paper-3','#fffdf8');
-      root.style.setProperty('--rule','rgba(26,21,16,.1)');
-      root.style.setProperty('--rule2','rgba(26,21,16,.18)');
-    } else {
-      ['--ink','--ink-dim','--ink-mute','--paper','--paper-2','--paper-3','--rule','--rule2'].forEach(k => root.style.removeProperty(k));
-    }
-  };
-  apply();
-  document.getElementById('themeBtn')?.addEventListener('click', () => {
+  $('#themeBtn')?.addEventListener('click', () => {
     const n = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
     root.setAttribute('data-theme', n);
-    localStorage.setItem('s21-sat-theme', n);
-    apply();
+    localStorage.setItem('helena-piano-wz-theme', n);
   });
-  document.querySelectorAll('[data-acc]').forEach(sec => {
-    const btn = sec.querySelector('.acc-h');
-    btn?.addEventListener('click', () => {
-      const on = !sec.classList.contains('open');
-      sec.classList.toggle('open', on);
-      btn.setAttribute('aria-expanded', on ? 'true' : 'false');
+
+  const drawer = $('#mastRight'), burger = $('#menuBtn'), backdrop = $('#navBackdrop');
+  const closeNav = () => { drawer?.classList.remove('open'); backdrop?.classList.remove('show'); burger?.setAttribute('aria-expanded','false'); };
+  const openNav = () => { drawer?.classList.add('open'); backdrop?.classList.add('show'); burger?.setAttribute('aria-expanded','true'); };
+  burger?.addEventListener('click', () => drawer?.classList.contains('open') ? closeNav() : openNav());
+  backdrop?.addEventListener('click', closeNav);
+  drawer?.querySelectorAll('a').forEach(a => a.addEventListener('click', closeNav));
+
+  if (!reduce) {
+    const io = new IntersectionObserver(entries => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, {threshold:0.12, rootMargin:'0px 0px -40px 0px'});
+    $$('.reveal').forEach(el => io.observe(el));
+  } else $$('.reveal').forEach(el => el.classList.add('in'));
+
+  const countIo = new IntersectionObserver(entries => {
+    entries.forEach(en => {
+      if (!en.isIntersecting) return;
+      const el = en.target, target = +el.dataset.count || 0;
+      if (reduce) { el.textContent = String(target); countIo.unobserve(el); return; }
+      const t0 = performance.now(), dur = 1200;
+      const tick = now => {
+        const p = Math.min(1, (now-t0)/dur);
+        el.textContent = String(Math.round(target * (1-Math.pow(1-p,3))));
+        if (p < 1) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+      countIo.unobserve(el);
     });
+  }, {threshold:0.5});
+  $$('[data-count]').forEach(el => countIo.observe(el));
+
+  const barIo = new IntersectionObserver(entries => {
+    entries.forEach(en => {
+      if (!en.isIntersecting) return;
+      en.target.querySelectorAll('.meter-fill[data-w]').forEach(f => f.style.width = f.dataset.w + '%');
+      en.target.querySelectorAll('.f[data-pct]').forEach(f => f.style.width = f.dataset.pct + '%');
+      barIo.unobserve(en.target);
+    });
+  }, {threshold:0.25});
+  $$('.pillar, #gapBars, .ed-card').forEach(el => barIo.observe(el));
+
+  $$('.pillar').forEach(card => {
+    card.addEventListener('click', () => {
+      $$('.pillar').forEach(c => c.classList.remove('active'));
+      card.classList.add('active');
+      const fill = card.querySelector('.meter-fill');
+      if (fill) { fill.style.width = '0'; requestAnimationFrame(() => { fill.style.width = fill.dataset.w + '%'; }); }
+    });
+  });
+
+  const METHOD = [
+    {t:'01 · 워밍업 Warm', b:'스케일·아르페지오·쉬운 프레이즈로 손을 엽니다. 로그에 “워밍 분”만 적어도 됩니다.'},
+    {t:'02 · 집중 Work', b:'오늘 공략 마디만. 전체를 다시 치지 말고, 막힌 곳을 느리게 반복합니다.'},
+    {t:'03 · 테이크 Take', b:'한 테이크 원칙. 너무 길면 쇼츠 단위로 자릅니다. 파일명에 날짜·곡명을 남깁니다.'},
+    {t:'04 · 다듬기 Shape', b:'컷·레벨·제목·썸네일. 디자이너(_Grok) 시안 → 필요 시 반장(_Aider) 시공.'},
+    {t:'05 · 송출 Air', b:'YouTube로 올립니다. 올리지 않는 테이크도 아카이브에 남기면 다음 연습의 거울이 됩니다.'},
+  ];
+  const panel = $('#methodPanel');
+  $$('.m-step').forEach(step => {
+    step.addEventListener('click', () => {
+      $$('.m-step').forEach(s => s.classList.remove('active'));
+      step.classList.add('active');
+      const m = METHOD[+step.dataset.m];
+      if (panel && m) panel.innerHTML = `<h3>${m.t}</h3><p>${m.b}</p>`;
+    });
+  });
+
+  const tip = $('#archTip'), box = $('#archBox');
+  $$('.svg-arch .node').forEach(node => {
+    const show = e => {
+      const [title, body] = (node.dataset.tip || '|').split('|');
+      tip.innerHTML = `<strong>${title}</strong><span>${body||''}</span>`;
+      tip.classList.add('show');
+      node.classList.add('active');
+      if (!box) return;
+      const r = box.getBoundingClientRect();
+      const x = (e.clientX || r.left + r.width/2) - r.left;
+      const y = (e.clientY || r.top + 40) - r.top;
+      tip.style.left = Math.min(Math.max(8, x+12), r.width-220) + 'px';
+      tip.style.top = Math.min(Math.max(8, y+12), r.height-80) + 'px';
+    };
+    node.addEventListener('mouseenter', show);
+    node.addEventListener('mousemove', show);
+    node.addEventListener('mouseleave', () => { tip.classList.remove('show'); node.classList.remove('active'); });
+    node.addEventListener('click', show);
   });
 })();
 </script>
