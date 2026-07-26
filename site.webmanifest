@@ -1,0 +1,23 @@
+{
+  "name": "Helena Piano",
+  "short_name": "Helena",
+  "description": "연주·연습 기록과 YouTube 송출을 위한 미니 스튜디오 레포.",
+  "start_url": "/helena-piano/",
+  "scope": "/helena-piano/",
+  "display": "standalone",
+  "background_color": "#0a0908",
+  "theme_color": "#0a0908",
+  "lang": "ko",
+  "icons": [
+    {
+      "src": "https://helena751107.github.io/helena_phone/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://helena751107.github.io/helena_phone/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
