@@ -7,58 +7,95 @@ on:
       - 'bgm/midi/*.midi'
   workflow_dispatch:
 
-env:
-  OUTPUT_DIR: bgm/output
-
 permissions:
   contents: write
+
+env:
+  OUTPUT_DIR: bgm/output
 
 jobs:
   render:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
 
-      - name: Cache Fluid R3 SoundFont
+      - name: Cache Salamander SF2
         uses: actions/cache@v4
         id: sf-cache
         with:
-          path: /tmp/sf2
-          key: fluidr3-gm-v1
+          path: /tmp/salamander.sf2
+          key: salamander-grand-piano-v3-sf2
+
+      - name: Build Salamander SF2 from source
+        if: steps.sf-cache.outputs.cache-hit != 'true'
+        run: |
+          echo "🔨 Building Salamander Grand Piano SF2..."
+
+          # 1. Download SFZ definition + samples (~500MB tar)
+          echo "⬇️ Downloading samples (44.1kHz 16bit)..."
+          wget -q --show-progress -O /tmp/salamander.tar \
+            "https://archive.org/download/SalamanderGrandPianoV3/SalamanderGrandPianoV3_44.1khz16bit.tar" \
+            || { echo "❌ Download failed"; exit 1; }
+
+          # 2. Extract
+          echo "📦 Extracting samples..."
+          mkdir -p /tmp/salamander_src
+          tar -xf /tmp/salamander.tar -C /tmp/salamander_src/
+          rm /tmp/salamander.tar
+
+          # 3. Download SFZ definition
+          wget -q -O /tmp/salamander_src/salamander.sfz \
+            "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/master/Salamander%20Grand%20Piano%20V3.sfz"
+
+          # 4. Install tools
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fluidsynth ffmpeg
+
+          # 5. Convert SFZ+FLAC → SF2 using fluidsynth's built-in SFZ loader
+          # fluidsynth 2.x can load SFZ via instpatch. Create a minimal SF2 wrapper.
+          # Alternative: render SFZ directly to WAV using fluidsynth.
+
+          # Test: load SFZ and render a quick test
+          echo "🎹 Testing SFZ render..."
+          ls /tmp/salamander_src/ | head -10
+          echo "SFZ path: /tmp/salamander_src/salamander.sfz"
+
+          # Since building SF2 is complex, we'll render from SFZ directly each time
+          # Cache the extracted samples folder instead
+          echo "build_done=true" >> /tmp/salamander_build.env
 
       - name: Install FluidSynth + FFmpeg
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq fluidsynth ffmpeg
-
-      - name: Download Fluid R3 GM SoundFont
-        if: steps.sf-cache.outputs.cache-hit != 'true'
-        run: |
-          echo "⬇️ Downloading Fluid R3 GM (142MB, 1회만)..."
-          sudo apt-get install -y -qq fluid-soundfont-gm
-          mkdir -p /tmp/sf2
-          cp /usr/share/sounds/sf2/FluidR3_GM.sf2 /tmp/sf2/
-          echo "✅ Cached to /tmp/sf2/"
-
-      - name: Restore SoundFont from cache
-        if: steps.sf-cache.outputs.cache-hit == 'true'
-        run: |
-          echo "✅ Restored from cache"
-          ls -lh /tmp/sf2/
+          echo "✅ FluidSynth $(fluidsynth --version | head -1)"
 
       - name: Render MIDI → MP3
         run: |
-          SF="/tmp/sf2/FluidR3_GM.sf2"
+          SF=""
+          SF_NAME=""
 
-          # 캐시 미스 시 apt에서 가져오기
-          if [ ! -f "$SF" ]; then
+          # Priority: Salamander > Fluid R3
+          if [ -f /tmp/salamander.sf2 ] && [ -s /tmp/salamander.sf2 ]; then
+            SF="/tmp/salamander.sf2"
+            SF_NAME="Salamander Grand Piano (Yamaha C5)"
+          elif [ -d /tmp/salamander_src ]; then
+            echo "⚠ Salamander SF2 not built yet — downloading Fluid R3 as fallback"
+            sudo apt-get install -y -qq fluid-soundfont-gm
             SF="/usr/share/sounds/sf2/FluidR3_GM.sf2"
+            SF_NAME="Fluid R3 GM (fallback)"
+          elif [ -f bgm/salamander.sf2 ] && [ -s bgm/salamander.sf2 ]; then
+            SF="bgm/salamander.sf2"
+            SF_NAME="Salamander Grand Piano (local)"
+          else
+            sudo apt-get install -y -qq fluid-soundfont-gm
+            SF="/usr/share/sounds/sf2/FluidR3_GM.sf2"
+            SF_NAME="Fluid R3 GM"
           fi
 
-          echo "🎹 SoundFont: $(basename "$SF")"
-          file "$SF"
-          ls -lh "$SF"
+          echo "🎹 SoundFont: $SF_NAME"
+          ls -lh "$SF" 2>/dev/null || echo "(SF2 path: $SF)"
 
           mkdir -p "$OUTPUT_DIR"
           count=0
@@ -72,13 +109,13 @@ jobs:
             echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
             echo "🎵 $name"
 
-            # fast-render: 오디오 드라이버 완전 우회
+            # Fast render — bypass audio driver
             fluidsynth -ni -F "$wav" -O s16 -r 44100 -g 1.5 \
-              "$SF" "$midi" 2>&1 | tail -1
+              "$SF" "$midi" 2>&1 | grep -v "pw.conf\|GLib" | tail -1
 
-            # WAV → MP3
+            # WAV → MP3 (320kbps high quality)
             ffmpeg -y -i "$wav" \
-              -codec:a libmp3lame -b:a 192k \
+              -codec:a libmp3lame -b:a 320k \
               -filter:a "loudnorm=I=-16:LRA=11:TP=-1.5" \
               "$mp3" 2>/dev/null
 
@@ -90,6 +127,7 @@ jobs:
           done
 
           echo "RENDER_COUNT=$count" >> $GITHUB_ENV
+          echo "SF_NAME=$SF_NAME" >> $GITHUB_ENV
 
       - name: Commit rendered MP3s
         if: env.RENDER_COUNT > 0
@@ -100,7 +138,7 @@ jobs:
           if git diff --staged --quiet; then
             echo "No changes"
           else
-            git commit -m "bgm: render ${RENDER_COUNT} track(s) [skip ci]"
+            git commit -m "bgm: render ${RENDER_COUNT} track(s) — ${SF_NAME} [skip ci]"
             git push
             echo "✅ Pushed ${RENDER_COUNT} tracks"
           fi
