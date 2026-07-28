@@ -6,15 +6,6 @@ on:
       - 'bgm/midi/*.mid'
       - 'bgm/midi/*.midi'
   workflow_dispatch:
-    inputs:
-      soundfont:
-        description: 'SoundFont'
-        required: false
-        default: 'fluidr3'
-        type: choice
-        options:
-          - fluidr3
-          - salamander
 
 env:
   OUTPUT_DIR: bgm/output
@@ -22,49 +13,67 @@ env:
 jobs:
   render:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install FluidSynth + FFmpeg + Fluid R3 SoundFont
+      - name: Cache Fluid R3 SoundFont
+        uses: actions/cache@v4
+        id: sf-cache
+        with:
+          path: /tmp/sf2
+          key: fluidr3-gm-v1
+
+      - name: Install FluidSynth + FFmpeg
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y -qq fluidsynth ffmpeg fluid-soundfont-gm
-          echo "✅ FluidSynth $(fluidsynth --version | head -1)"
+          sudo apt-get install -y -qq fluidsynth ffmpeg
+
+      - name: Download Fluid R3 GM SoundFont
+        if: steps.sf-cache.outputs.cache-hit != 'true'
+        run: |
+          echo "⬇️ Downloading Fluid R3 GM (142MB, 1회만)..."
+          sudo apt-get install -y -qq fluid-soundfont-gm
+          mkdir -p /tmp/sf2
+          cp /usr/share/sounds/sf2/FluidR3_GM.sf2 /tmp/sf2/
+          echo "✅ Cached to /tmp/sf2/"
+
+      - name: Restore SoundFont from cache
+        if: steps.sf-cache.outputs.cache-hit == 'true'
+        run: |
+          echo "✅ Restored from cache"
+          ls -lh /tmp/sf2/
 
       - name: Render MIDI → MP3
         run: |
-          mkdir -p "$OUTPUT_DIR"
+          SF="/tmp/sf2/FluidR3_GM.sf2"
 
-          # Fluid R3 GM SoundFont (apt로 설치됨, 피아노 양호)
-          SF="/usr/share/sounds/sf2/FluidR3_GM.sf2"
-          SF_NAME="Fluid R3 GM"
-
-          # Salamander가 있으면 그걸로 (수동 업로드)
-          if [ -f bgm/salamander.sf2 ] && [ -s bgm/salamander.sf2 ]; then
-            SF="bgm/salamander.sf2"
-            SF_NAME="Salamander Grand Piano"
+          # 캐시 미스 시 apt에서 가져오기
+          if [ ! -f "$SF" ]; then
+            SF="/usr/share/sounds/sf2/FluidR3_GM.sf2"
           fi
 
-          echo "🎹 SoundFont: $SF_NAME"
+          echo "🎹 SoundFont: $(basename "$SF")"
           file "$SF"
           ls -lh "$SF"
 
+          mkdir -p "$OUTPUT_DIR"
           count=0
+
           for midi in bgm/midi/*.mid bgm/midi/*.midi; do
             [ -f "$midi" ] || continue
             name=$(basename "$midi" | sed 's/\.mid[i]*$//')
             wav="$OUTPUT_DIR/$name.wav"
             mp3="$OUTPUT_DIR/$name.mp3"
 
-            echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-            echo "🎵 $name → $SF_NAME"
+            echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+            echo "🎵 $name"
 
-            # fluidsynth fast-render: 오디오 드라이버 완전 우회
+            # fast-render: 오디오 드라이버 완전 우회
             fluidsynth -ni -F "$wav" -O s16 -r 44100 -g 1.5 \
-              "$SF" "$midi" 2>&1 | tail -3
+              "$SF" "$midi" 2>&1 | tail -1
 
-            # WAV → MP3 (192kbps, LUFS 노멀라이즈)
+            # WAV → MP3
             ffmpeg -y -i "$wav" \
               -codec:a libmp3lame -b:a 192k \
               -filter:a "loudnorm=I=-16:LRA=11:TP=-1.5" \
@@ -76,26 +85,8 @@ jobs:
             echo "   ✅ $mp3 (${size}, ${dur}s)"
             count=$((count + 1))
           done
-          echo "RENDER_COUNT=$count" >> $GITHUB_ENV
-          echo "SF_NAME=$SF_NAME" >> $GITHUB_ENV
 
-      - name: Generate catalog.json
-        if: env.RENDER_COUNT > 0
-        run: |
-          echo "[" > "$OUTPUT_DIR/catalog.json"
-          first=true
-          for mp3 in "$OUTPUT_DIR"/*.mp3; do
-            [ -f "$mp3" ] || continue
-            name=$(basename "$mp3" .mp3)
-            size=$(stat -c%s "$mp3")
-            dur=$(ffprobe -v quiet -show_entries format=duration -of csv=p=0 "$mp3" 2>/dev/null || echo "0")
-            url="https://helena751107.github.io/helena-piano/$OUTPUT_DIR/$name.mp3"
-            $first || echo "," >> "$OUTPUT_DIR/catalog.json"
-            first=false
-            printf '  {"name":"%s","url":"%s","size":%s,"duration":%s}\n' "$name" "$url" "$size" "$dur" >> "$OUTPUT_DIR/catalog.json"
-          done
-          echo "]" >> "$OUTPUT_DIR/catalog.json"
-          cat "$OUTPUT_DIR/catalog.json"
+          echo "RENDER_COUNT=$count" >> $GITHUB_ENV
 
       - name: Commit rendered MP3s
         if: env.RENDER_COUNT > 0
@@ -104,9 +95,9 @@ jobs:
           git config user.email "bgm@helena.piano"
           git add bgm/output/
           if git diff --staged --quiet; then
-            echo "No changes to commit"
+            echo "No changes"
           else
-            git commit -m "bgm: render ${RENDER_COUNT} track(s) — ${SF_NAME} [skip ci]"
+            git commit -m "bgm: render ${RENDER_COUNT} track(s) [skip ci]"
             git push
-            echo "✅ Committed & pushed: ${RENDER_COUNT} tracks"
+            echo "✅ Pushed ${RENDER_COUNT} tracks"
           fi
