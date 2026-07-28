@@ -90,13 +90,10 @@ render_one() {
   echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
   echo "🎵 $name"
 
-  # MIDI → WAV
-  fluidsynth -ni \
-    -g "$GAIN" \
-    -r "$SAMPLE_RATE" \
-    -o audio.file.format=wav \
-    -o audio.file.name="$wav" \
-    "$SF_PATH" "$midi"
+  # MIDI → WAV (fast-render, 오디오 드라이버 우회)
+  fluidsynth -ni -F "$wav" -O s16 \
+    -r "$SAMPLE_RATE" -g "$GAIN" \
+    "$SF_PATH" "$midi" 2>&1 | tail -1
 
   # WAV → MP3 (LUFS 노멀라이즈)
   ffmpeg -y -i "$wav" \
