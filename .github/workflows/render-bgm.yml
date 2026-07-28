@@ -60,10 +60,8 @@ jobs:
             echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
             echo "🎵 $name → $SF_NAME"
 
-            # fluidsynth -a file: ALSA 없이 파일로 직접 출력
-            fluidsynth -a file -g 1.5 -r 44100 \
-              -O wav \
-              -o audio.file.name="$wav" \
+            # fluidsynth fast-render: 오디오 드라이버 완전 우회
+            fluidsynth -ni -F "$wav" -O s16 -r 44100 -g 1.5 \
               "$SF" "$midi" 2>&1 | tail -3
 
             # WAV → MP3 (192kbps, LUFS 노멀라이즈)
