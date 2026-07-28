@@ -10,11 +10,11 @@ on:
       soundfont:
         description: 'SoundFont'
         required: false
-        default: 'salamander'
+        default: 'fluidr3'
         type: choice
         options:
-          - salamander
           - fluidr3
+          - salamander
 
 env:
   OUTPUT_DIR: bgm/output
@@ -22,44 +22,34 @@ env:
 jobs:
   render:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
 
-      - name: Cache Salamander SoundFont
-        uses: actions/cache@v4
-        id: sf-cache
-        with:
-          path: /tmp/salamander.sf2
-          key: salamander-grand-piano-v3
-
-      - name: Download Salamander Grand Piano SF2
-        if: steps.sf-cache.outputs.cache-hit != 'true'
-        run: |
-          echo "Downloading Salamander Grand Piano (Yamaha C5, 244MB)..."
-          wget -q --show-progress -O /tmp/salamander.sf2 \
-            "https://github.com/sfzinstruments/SalamanderGrandPiano/releases/download/v3/salamander-grand-piano-v3.sf2" \
-            || echo "SKIPPED: Salamander download failed, will use Fluid R3"
-
-      - name: Install FluidSynth + FFmpeg + Fluid R3
+      - name: Install FluidSynth + FFmpeg + Fluid R3 SoundFont
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq fluidsynth ffmpeg fluid-soundfont-gm
+          echo "✅ FluidSynth $(fluidsynth --version | head -1)"
 
       - name: Render MIDI → MP3
         run: |
           mkdir -p "$OUTPUT_DIR"
 
-          # SoundFont 선택
+          # Fluid R3 GM SoundFont (apt로 설치됨, 피아노 양호)
           SF="/usr/share/sounds/sf2/FluidR3_GM.sf2"
           SF_NAME="Fluid R3 GM"
-          if [ -f /tmp/salamander.sf2 ] && [ -s /tmp/salamander.sf2 ]; then
-            SF="/tmp/salamander.sf2"
+
+          # Salamander가 있으면 그걸로 (수동 업로드)
+          if [ -f bgm/salamander.sf2 ] && [ -s bgm/salamander.sf2 ]; then
+            SF="bgm/salamander.sf2"
             SF_NAME="Salamander Grand Piano"
           fi
-          echo "🎹 SoundFont: $SF_NAME"
 
-          # 렌더링
+          echo "🎹 SoundFont: $SF_NAME"
+          file "$SF"
+          ls -lh "$SF"
+
           count=0
           for midi in bgm/midi/*.mid bgm/midi/*.midi; do
             [ -f "$midi" ] || continue
@@ -67,14 +57,16 @@ jobs:
             wav="$OUTPUT_DIR/$name.wav"
             mp3="$OUTPUT_DIR/$name.mp3"
 
-            echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+            echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
             echo "🎵 $name → $SF_NAME"
 
-            fluidsynth -ni -g 1.5 -r 44100 \
-              -o audio.file.format=wav \
+            # fluidsynth -a file: ALSA 없이 파일로 직접 출력
+            fluidsynth -a file -g 1.5 -r 44100 \
+              -O wav \
               -o audio.file.name="$wav" \
-              "$SF" "$midi"
+              "$SF" "$midi" 2>&1 | tail -3
 
+            # WAV → MP3 (192kbps, LUFS 노멀라이즈)
             ffmpeg -y -i "$wav" \
               -codec:a libmp3lame -b:a 192k \
               -filter:a "loudnorm=I=-16:LRA=11:TP=-1.5" \
@@ -86,10 +78,11 @@ jobs:
             echo "   ✅ $mp3 (${size}, ${dur}s)"
             count=$((count + 1))
           done
-          echo "count=$count" >> $GITHUB_ENV
-          echo "sf_name=$SF_NAME" >> $GITHUB_ENV
+          echo "RENDER_COUNT=$count" >> $GITHUB_ENV
+          echo "SF_NAME=$SF_NAME" >> $GITHUB_ENV
 
       - name: Generate catalog.json
+        if: env.RENDER_COUNT > 0
         run: |
           echo "[" > "$OUTPUT_DIR/catalog.json"
           first=true
@@ -104,9 +97,10 @@ jobs:
             printf '  {"name":"%s","url":"%s","size":%s,"duration":%s}\n' "$name" "$url" "$size" "$dur" >> "$OUTPUT_DIR/catalog.json"
           done
           echo "]" >> "$OUTPUT_DIR/catalog.json"
-          echo "📋 catalog.json created"
+          cat "$OUTPUT_DIR/catalog.json"
 
       - name: Commit rendered MP3s
+        if: env.RENDER_COUNT > 0
         run: |
           git config user.name "Helena BGM Studio"
           git config user.email "bgm@helena.piano"
@@ -114,7 +108,7 @@ jobs:
           if git diff --staged --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "bgm: auto-render ${count} tracks (${sf_name}) [skip ci]"
+            git commit -m "bgm: render ${RENDER_COUNT} track(s) — ${SF_NAME} [skip ci]"
             git push
-            echo "✅ Committed & pushed"
+            echo "✅ Committed & pushed: ${RENDER_COUNT} tracks"
           fi
