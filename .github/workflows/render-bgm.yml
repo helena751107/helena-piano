@@ -1,0 +1,154 @@
+# ─── Helena Piano BGM Studio ───────────────────────────────
+# MIDI 파일을 커밋하면 GitHub Actions가 MP3로 자동 렌더링합니다.
+# SoundFont: Salamander Grand Piano (Yamaha C5, 16 velocity layers)
+#
+# 구조:
+#   bgm/midi/*.mid  →  (입력) Public Domain MIDI 파일
+#   bgm/output/*.mp3 →  (출력) 렌더링된 배경음악
+#
+# 트리거:
+#   - bgm/midi/ 에 .mid 파일 push 시 자동 실행
+#   - 수동 실행: Actions 탭 → Render BGM → Run workflow
+# ─────────────────────────────────────────────────────────────
+
+name: Render BGM
+
+on:
+  push:
+    paths:
+      - 'bgm/midi/*.mid'
+      - 'bgm/midi/*.midi'
+  workflow_dispatch:
+    inputs:
+      soundfont:
+        description: 'SoundFont (salamander / fluidr3)'
+        required: false
+        default: 'salamander'
+        type: choice
+        options:
+          - salamander
+          - fluidr3
+
+env:
+  SF2_PATH: /tmp/salamander.sf2
+  OUTPUT_DIR: bgm/output
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Cache SoundFont
+        uses: actions/cache@v4
+        id: sf-cache
+        with:
+          path: /tmp/salamander.sf2
+          key: salamander-grand-piano-v3
+
+      - name: Download Salamander Grand Piano SF2
+        if: steps.sf-cache.outputs.cache-hit != 'true' && github.event.inputs.soundfont != 'fluidr3'
+        run: |
+          # Salamander Grand Piano — 244MB SF2 (Yamaha C5, 16 velocity layers)
+          # MIT 라이선스, 자유롭게 사용 가능
+          wget -q -O /tmp/salamander.sf2 \
+            "https://github.com/sfzinstruments/SalamanderGrandPiano/releases/download/v3/salamander-grand-piano-v3.sf2" \
+            || echo "Salamander 다운로드 실패 → Fluid R3로 fallback"
+
+      - name: Install FluidSynth + FFmpeg
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fluidsynth ffmpeg
+
+      - name: Install Fluid R3 (fallback)
+        if: steps.sf-cache.outputs.cache-hit != 'true'
+        run: |
+          sudo apt-get install -y -qq fluid-soundfont-gm
+          echo "FLUIDR3=/usr/share/sounds/sf2/FluidR3_GM.sf2" >> $GITHUB_ENV
+
+      - name: Select SoundFont
+        id: sf
+        run: |
+          if [ -f /tmp/salamander.sf2 ] && [ "${{ github.event.inputs.soundfont }}" != "fluidr3" ]; then
+            echo "path=/tmp/salamander.sf2" >> $GITHUB_OUTPUT
+            echo "name=Salamander Grand Piano" >> $GITHUB_OUTPUT
+          else
+            echo "path=$FLUIDR3" >> $GITHUB_OUTPUT
+            echo "name=Fluid R3 GM" >> $GITHUB_OUTPUT
+          fi
+          echo "🎹 SoundFont: ${{ steps.sf.outputs.name }}"
+
+      - name: Render MIDI → MP3
+        run: |
+          mkdir -p "$OUTPUT_DIR"
+          SF="${{ steps.sf.outputs.path }}"
+
+          for midi in bgm/midi/*.mid bgm/midi/*.midi; do
+            [ -f "$midi" ] || continue
+            name=$(basename "$midi" | sed 's/\.mid[i]*$//')
+            wav="$OUTPUT_DIR/$name.wav"
+            mp3="$OUTPUT_DIR/$name.mp3"
+
+            echo "──────────────────────────────────────"
+            echo "🎵 렌더링: $name"
+            echo "   SoundFont: ${{ steps.sf.outputs.name }}"
+
+            # MIDI → WAV (16bit 44.1kHz, 게인 1.5)
+            fluidsynth -ni \
+              -g 1.5 \
+              -r 44100 \
+              -o audio.file.format=wav \
+              -o audio.file.name="$wav" \
+              "$SF" "$midi"
+
+            # WAV → MP3 (192kbps, 볼륨 노멀라이즈)
+            ffmpeg -y -i "$wav" \
+              -codec:a libmp3lame -b:a 192k \
+              -filter:a "loudnorm=I=-16:LRA=11:TP=-1.5" \
+              "$mp3" 2>/dev/null
+
+            # 정리
+            rm -f "$wav"
+
+            size=$(du -h "$mp3" | cut -f1)
+            dur=$(ffprobe -v quiet -show_entries format=duration -of csv=p=0 "$mp3")
+            echo "   ✅ 완료: $mp3 (${size}, ${dur}s)"
+          done
+
+      - name: Generate BGM catalog JSON
+        run: |
+          echo "[" > "$OUTPUT_DIR/catalog.json"
+          first=true
+          for mp3 in "$OUTPUT_DIR"/*.mp3; do
+            [ -f "$mp3" ] || continue
+            name=$(basename "$mp3" .mp3)
+            size=$(stat -c%s "$mp3")
+            dur=$(ffprobe -v quiet -show_entries format=duration -of csv=p=0 "$mp3" 2>/dev/null || echo "0")
+            url="https://helena751107.github.io/helena-piano/$OUTPUT_DIR/$name.mp3"
+            $first || echo "," >> "$OUTPUT_DIR/catalog.json"
+            first=false
+            echo "  {\"name\":\"$name\",\"url\":\"$url\",\"size\":$size,\"duration\":$dur}" >> "$OUTPUT_DIR/catalog.json"
+          done
+          echo "]" >> "$OUTPUT_DIR/catalog.json"
+          echo "📋 카탈로그 생성: $OUTPUT_DIR/catalog.json"
+
+      - name: Commit rendered MP3s
+        run: |
+          git config user.name "Helena BGM Studio"
+          git config user.email "bgm@helena.piano"
+
+          # .gitignore 확인
+          grep -q "^bgm/output/" .gitignore 2>/dev/null || true
+
+          git add bgm/output/
+          git diff --staged --quiet || {
+            git commit -m "🎵 bgm: auto-render $(ls bgm/output/*.mp3 2>/dev/null | wc -l) tracks (${{ steps.sf.outputs.name }})
+
+      Source: bgm/midi/*.mid
+      SoundFont: ${{ steps.sf.outputs.name }}
+      Trigger: ${{ github.event_name }}
+
+      Co-Authored-By: Helena BGM Studio <bgm@helena.piano>"
+            git push
+          }
