@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="ko" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="parksy-audio 파이프라인 전체 흐름 — helena-piano &quot;Record → Broadcast&quot; 구역과 매핑">
+<meta name="theme-color" content="#0a0908">
+<title>04 — MIDI → 렌더링 → YouTube 송출 파이프라인 지도 — Helena Piano</title>
+<link rel="icon" href="../icons/favicon-32.png" type="image/png">
+<link rel="manifest" href="../site.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;1,400&family=DM+Sans:opsz,wght@9..40,400;9..40,600&family=JetBrains+Mono:wght@400&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://helena751107.github.io/helena_phone/assets/webzine.css">
+<style>
+:root {
+  --ink:#f4efe6; --ink-dim:#b5a999; --ink-mute:#7a7064;
+  --paper:#0a0908; --paper-2:#12100e; --paper-3:#1a1714;
+  --rule:rgba(244,239,230,.1); --rule2:rgba(244,239,230,.18);
+  --accent:#8b7cf0; --gold:#d4a84b;
+  --serif:'Cormorant Garamond',serif; --sans:'DM Sans','Noto Sans KR',system-ui,sans-serif;
+  --mono:'JetBrains Mono',monospace;
+  --gutter:max(22px, calc(env(safe-area-inset-left,0px) + 16px));
+  --gutter-r:max(22px, calc(env(safe-area-inset-right,0px) + 16px));
+}
+[data-theme="light"] {
+  --ink:#1a1510; --ink-dim:#5c5348; --ink-mute:#8a8074;
+  --paper:#f7f1e6; --paper-2:#efe8db; --paper-3:#fffdf8;
+  --rule:rgba(26,21,16,.1); --rule2:rgba(26,21,16,.18);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--paper);color:var(--ink);line-height:1.7;min-height:100vh}
+a{color:var(--accent);text-decoration:none}
+a:hover{filter:brightness(1.15)}
+.spine{position:fixed;left:0;top:0;bottom:0;width:2px;background:var(--rule);z-index:50}
+.spine-fill{width:100%;height:0;background:var(--accent)}
+.mast{position:sticky;top:0;z-index:40;display:flex;justify-content:space-between;align-items:center;gap:12px;
+  padding:12px var(--gutter-r) 12px var(--gutter);padding-top:max(12px,env(safe-area-inset-top));
+  background:color-mix(in srgb,var(--paper) 90%,transparent);backdrop-filter:blur(12px);border-bottom:1px solid var(--rule)}
+.brand{font-family:var(--serif);font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:1rem;color:var(--ink)}
+.brand em{font-style:italic;color:var(--accent);font-weight:400}
+.mast nav{display:flex;flex-wrap:wrap;gap:6px}
+.mast a,.mast button{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-dim);
+  min-height:40px;padding:8px 10px;background:none;border:none;cursor:pointer;font-family:inherit}
+.wrap{max-width:720px;margin:0 auto;padding:28px var(--gutter-r) 80px var(--gutter)}
+.kicker{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:10px}
+h1{font-family:var(--serif);font-size:clamp(1.7rem,6vw,2.4rem);font-weight:600;margin-bottom:10px;padding-inline:2px}
+.deck{color:var(--ink-dim);font-weight:300;border-left:2px solid var(--accent);padding-left:12px;margin-bottom:18px}
+.meta{font-size:.75rem;color:var(--ink-mute);margin-bottom:22px;font-family:var(--mono)}
+.prose h2{font-family:var(--serif);font-size:1.35rem;margin:1.6em 0 .6em;color:var(--ink)}
+.prose h3{font-size:1.05rem;margin:1.2em 0 .5em}
+.prose p,.prose li{color:var(--ink-dim);font-weight:300;margin-bottom:.7em}
+.prose ul,.prose ol{margin:0 0 1em 1.2em}
+.prose code{font-family:var(--mono);font-size:.85em;color:var(--accent)}
+.prose pre{background:var(--paper-2);border:1px solid var(--rule);padding:14px;overflow-x:auto;margin:1em 0;font-size:.82rem}
+.prose table{width:100%;border-collapse:collapse;font-size:.88rem;margin:1em 0}
+.prose th,.prose td{border:1px solid var(--rule);padding:8px 10px;text-align:left;vertical-align:top}
+.prose th{background:var(--paper-3);color:var(--ink-mute);font-size:.72rem;letter-spacing:.06em;text-transform:uppercase}
+.prose blockquote{border-left:2px solid var(--accent);padding:8px 14px;color:var(--ink-dim);margin:1em 0;background:var(--paper-2)}
+.appbar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px;padding:10px;background:var(--paper-2);border:1px solid var(--rule);position:sticky;top:56px;z-index:30}
+.appbar input{flex:1 1 140px;min-height:40px;padding:8px 10px;border:1px solid var(--rule2);background:var(--paper);color:var(--ink);font:inherit}
+.appbar button{min-height:40px;padding:8px 12px;border:1px solid var(--rule2);background:var(--paper-3);color:var(--ink-dim);font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;cursor:pointer;font-family:inherit}
+.foot{margin-top:40px;padding-top:18px;border-top:1px solid var(--rule);text-align:center;color:var(--ink-mute);font-size:.8rem}
+.foot .a{color:var(--accent);margin-top:8px}
+.sec{border:1px solid var(--rule);background:var(--paper-2);margin:1em 0;border-radius:2px;overflow:hidden}
+.sec > .sec-h{width:100%;display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 14px;background:none;border:none;color:inherit;font:inherit;cursor:pointer;text-align:left;min-height:48px}
+.sec > .sec-h h2{margin:0;font-size:1.15rem;font-family:var(--serif)}
+.sec .ico{width:28px;height:28px;border:1px solid var(--rule2);display:grid;place-items:center;color:var(--accent)}
+.sec.open .ico{transform:rotate(45deg)}
+.sec .sec-b{display:grid;grid-template-rows:0fr;transition:grid-template-rows .3s}
+.sec.open .sec-b{grid-template-rows:1fr}
+.sec .sec-i{overflow:hidden;min-height:0;opacity:0;padding:0 14px;transition:opacity .25s}
+.sec.open .sec-i{opacity:1;padding:0 14px 14px}
+mark.hit{background:color-mix(in srgb,var(--accent) 35%,transparent)}
+</style>
+</head>
+<body>
+<div class="spine" aria-hidden="true"><div class="spine-fill" id="spineFill"></div></div>
+<header class="mast">
+  <a class="brand" href="../">Helena <em>Piano</em></a>
+  <nav>
+    <a href="../">Home</a>
+    <a href="../docs/">Docs</a>
+    <a href="https://helena751107.github.io/helena_phone/">Hub</a>
+    <button type="button" id="themeBtn">Theme</button>
+  </nav>
+</header>
+<main class="wrap">
+  <div class="kicker">Studio · Docs</div>
+  <h1>04 — MIDI → 렌더링 → YouTube 송출 파이프라인 지도</h1>
+  <p class="deck">parksy-audio 파이프라인 전체 흐름 — helena-piano &quot;Record → Broadcast&quot; 구역과 매핑</p>
+  <div class="meta">source · fridge/04-pipeline-map.md · bridge docs↔web · _Grok</div>
+  <div class="appbar">
+    <input type="search" id="q" placeholder="페이지 내 검색…" autocomplete="off">
+    <button type="button" id="fold">접기</button>
+    <button type="button" id="expand">펼치기</button>
+  </div>
+  <article class="prose" id="prose"><blockquote>
+<p>parksy-audio 파이프라인 전체 흐름 — helena-piano &ldquo;Record → Broadcast&rdquo; 구역과 매핑</p>
+</blockquote>
+<hr>
+<h2 id="_1">전체 파이프라인</h2>
+<pre><code>┌─────────────────────────────────────────────────────────────────┐
+│                        SOURCE POOL                               │
+│  ┌──────────┐  ┌───────────┐  ┌────────────┐  ┌──────────────┐ │
+│  │ Public   │  │ YouTube   │  │ ABC 악보   │  │ 단선율       │ │
+│  │ Domain   │  │ 추출      │  │ (abcmidi)  │  │ 멜로디 입력  │ │
+│  │ MIDI     │  │ steal.py  │  │            │  │              │ │
+│  └────┬─────┘  └─────┬─────┘  └─────┬──────┘  └──────┬───────┘ │
+│       │              │              │                │          │
+│       └──────────────┴──────────────┴────────────────┘          │
+│                              │                                   │
+│                    ┌─────────▼─────────┐                        │
+│                    │  SOURCEPOOL       │                        │
+│                    │  HARVESTER        │                        │
+│                    │  (27KB)           │                        │
+│                    └─────────┬─────────┘                        │
+└──────────────────────────────┼──────────────────────────────────┘
+                               │
+┌──────────────────────────────▼──────────────────────────────────┐
+│                     COMPOSITION ENGINE                           │
+│  ┌──────────┐  ┌───────────┐  ┌────────────┐  ┌──────────────┐ │
+│  │ Composer │  │ Harmony   │  │ Chord      │  │ Melody       │ │
+│  │ v2 (35K) │  │ Library   │  │ Engine     │  │ Generator    │ │
+│  │          │  │ (42KB)    │  │ (27KB)     │  │ (18KB)       │ │
+│  └────┬─────┘  └─────┬─────┘  └─────┬──────┘  └──────┬───────┘ │
+│       └──────────────┴──────────────┴────────────────┘          │
+│                              │                                   │
+│                    ┌─────────▼─────────┐                        │
+│                    │  ARRANGER (22KB)  │                        │
+│                    └─────────┬─────────┘                        │
+└──────────────────────────────┼──────────────────────────────────┘
+                               │
+┌──────────────────────────────▼──────────────────────────────────┐
+│                     HUMANIZATION                                 │
+│  ┌──────────┐  ┌───────────┐  ┌────────────┐                   │
+│  │ Humanize │  │ Piano     │  │ Emotion    │                   │
+│  │ (26KB)   │  │ Express.  │  │ Profile    │                   │
+│  │          │  │ (26KB)    │  │ (33KB)     │                   │
+│  └────┬─────┘  └─────┬─────┘  └─────┬──────┘                   │
+│       └──────────────┴──────────────┘                           │
+│                              │                                   │
+│                    ┌─────────▼─────────┐                        │
+│                    │  HUMANIZED MIDI   │                        │
+│                    └─────────┬─────────┘                        │
+└──────────────────────────────┼──────────────────────────────────┘
+                               │
+┌──────────────────────────────▼──────────────────────────────────┐
+│                     RENDERING                                    │
+│  ┌──────────┐  ┌───────────┐  ┌────────────┐  ┌──────────────┐ │
+│  │ FluidSynth│  │ Timidity  │  │ WildMidi   │  │ Render       │ │
+│  │ + FluidR3│  │ + FreePats│  │ + GUS      │  │ Orchestral   │ │
+│  │ (SF2)    │  │ (SF2)     │  │ (Pat)      │  │ (16KB)       │ │
+│  └────┬─────┘  └─────┬─────┘  └─────┬──────┘  └──────┬───────┘ │
+│       │              │              │                │          │
+│       └──────────────┴──────────────┴────────────────┘          │
+│                              │                                   │
+│                    ┌─────────▼─────────┐                        │
+│                    │  RAW WAV (16bit)  │                        │
+│                    └─────────┬─────────┘                        │
+└──────────────────────────────┼──────────────────────────────────┘
+                               │
+┌──────────────────────────────▼──────────────────────────────────┐
+│                     POST-PRODUCTION                              │
+│  ┌──────────┐  ┌───────────┐  ┌────────────┐                   │
+│  │ Master   │  │ Visual    │  │ Make Video │                   │
+│  │ EQ/Comp  │  │ Gradient  │  │ MP4 output │                   │
+│  │ (7KB)    │  │ MP4 (3KB) │  │ (3KB)      │                   │
+│  └────┬─────┘  └─────┬─────┘  └─────┬──────┘                   │
+│       └──────────────┴──────────────┘                           │
+│                              │                                   │
+│                    ┌─────────▼─────────┐                        │
+│                    │  FINAL MP4/MP3    │                        │
+│                    └─────────┬─────────┘                        │
+└──────────────────────────────┼──────────────────────────────────┘
+                               │
+┌──────────────────────────────▼──────────────────────────────────┐
+│                     DISTRIBUTION                                 │
+│  ┌──────────┐  ┌───────────┐  ┌────────────┐  ┌──────────────┐ │
+│  │ YouTube  │  │ GitHub    │  │ Spotify    │  │ TG Delivery  │ │
+│  │ Upload   │  │ Pages     │  │ MCP        │  │ Bot          │ │
+│  │ (8KB)    │  │ (web/)    │  │ (19KB)     │  │ (36KB)       │ │
+│  └──────────┘  └───────────┘  └────────────┘  └──────────────┘ │
+└─────────────────────────────────────────────────────────────────┘
+</code></pre>
+<hr>
+<h2 id="helena-piano-parksy-audio">helena-piano 웹진 ↔ parksy-audio 매핑</h2>
+<table>
+<thead>
+<tr>
+<th>웹진 구역</th>
+<th>parksy-audio 자산</th>
+<th>연결 방식</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>01 Practice</strong></td>
+<td><code>midi_crawler.py</code> → 연습곡 MIDI 수집</td>
+<td>GitHub Actions 주간 크롤</td>
+</tr>
+<tr>
+<td><strong>02 Repertoire</strong></td>
+<td><code>composer_v2.py</code>, <code>melody_generator.py</code></td>
+<td>레퍼토리 목록 자동 생성</td>
+</tr>
+<tr>
+<td><strong>03 Record</strong></td>
+<td><code>fluidsynth</code> + <code>run_render.py</code></td>
+<td>MIDI → MP3 원클릭 렌더</td>
+</tr>
+<tr>
+<td><strong>04 Broadcast</strong></td>
+<td><code>upload-musician.cjs</code>, <code>youtube-studio.js</code></td>
+<td>YouTube 자동 송출</td>
+</tr>
+<tr>
+<td><strong>Session card</strong></td>
+<td><code>session_logger.py</code></td>
+<td>연습 세션 로깅</td>
+</tr>
+<tr>
+<td><strong>Rhythm</strong></td>
+<td><code>emotion_profile.py</code> → 감정 태깅</td>
+<td>곡 분위기 분류</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="github-actions">GitHub Actions 워크플로우 구상</h2>
+<pre><code class="language-yaml"># .github/workflows/render-piano.yml
+name: Render Piano BGM
+on:
+  push:
+    paths: ['midi/*.mid']
+  workflow_dispatch:
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install fluidsynth + soundfont
+        run: sudo apt-get install -y fluidsynth fluid-soundfont-gm ffmpeg
+      - name: Render MIDI → MP3
+        run: |
+          for midi in midi/*.mid; do
+            name=$(basename &quot;$midi&quot; .mid)
+            fluidsynth -ni /usr/share/sounds/sf2/FluidR3_GM.sf2 &quot;$midi&quot; -F &quot;output/$name.wav&quot;
+            ffmpeg -i &quot;output/$name.wav&quot; -codec:a libmp3lame -b:a 192k &quot;output/$name.mp3&quot;
+          done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: piano-bgm
+          path: output/*.mp3
+</code></pre></article>
+  <footer class="foot">
+    <div>Helena Piano · Docs Webzine</div>
+    <div class="a">모든 계정은 큰누나 명의입니다.</div>
+    <p style="margin-top:12px"><a href="../">← Landing</a> · <a href="https://helena751107.github.io/helena_phone/">S21 Hub</a></p>
+  </footer>
+</main>
+<script>
+(() => {
+  const root = document.documentElement;
+  const saved = localStorage.getItem('helena-doc-theme');
+  if (saved) root.setAttribute('data-theme', saved);
+  document.getElementById('themeBtn')?.addEventListener('click', () => {
+    const n = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', n);
+    localStorage.setItem('helena-doc-theme', n);
+  });
+  const spine = document.getElementById('spineFill');
+  addEventListener('scroll', () => {
+    const max = document.documentElement.scrollHeight - innerHeight;
+    if (spine) spine.style.height = (max > 0 ? (scrollY / max) * 100 : 0) + '%';
+  }, { passive: true });
+  const prose = document.getElementById('prose');
+  if (prose) {
+    [...prose.querySelectorAll(':scope > h2')].forEach((h2) => {
+      const sec = document.createElement('div');
+      sec.className = 'sec open';
+      const btn = document.createElement('button');
+      btn.type = 'button'; btn.className = 'sec-h';
+      const tw = document.createElement('div'); tw.appendChild(h2.cloneNode(true));
+      const ico = document.createElement('span'); ico.className = 'ico'; ico.textContent = '+';
+      btn.appendChild(tw); btn.appendChild(ico);
+      const body = document.createElement('div'); body.className = 'sec-b';
+      const inner = document.createElement('div'); inner.className = 'sec-i';
+      let n = h2.nextSibling; const move = [];
+      while (n && !(n.nodeType === 1 && n.tagName === 'H2')) { move.push(n); n = n.nextSibling; }
+      move.forEach(x => inner.appendChild(x));
+      body.appendChild(inner); sec.appendChild(btn); sec.appendChild(body);
+      h2.replaceWith(sec);
+      btn.addEventListener('click', () => {
+        const on = !sec.classList.contains('open');
+        sec.classList.toggle('open', on);
+      });
+    });
+    const setAll = (open) => prose.querySelectorAll('.sec').forEach(s => s.classList.toggle('open', open));
+    document.getElementById('fold')?.addEventListener('click', () => setAll(false));
+    document.getElementById('expand')?.addEventListener('click', () => setAll(true));
+    document.getElementById('q')?.addEventListener('input', (e) => {
+      const q = e.target.value.trim().toLowerCase();
+      prose.querySelectorAll('.sec').forEach(sec => {
+        const hit = !q || sec.innerText.toLowerCase().includes(q);
+        sec.style.display = hit ? '' : 'none';
+        if (hit && q) sec.classList.add('open');
+      });
+    });
+  }
+})();
+</script>
+</body>
+</html>

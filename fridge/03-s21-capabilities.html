@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="md→html 목록">
+<meta name="description" content="환경: S21 (aarch64) + Termux + proot-distro Ubuntu 26.04">
 <meta name="theme-color" content="#0a0908">
-<title>Helena Piano · Pages Bridge — Helena Piano</title>
+<title>03 — S21 + proot Ubuntu 실행 가능 자산 — Helena Piano</title>
 <link rel="icon" href="../icons/favicon-32.png" type="image/png">
 <link rel="manifest" href="../site.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -87,15 +87,334 @@ mark.hit{background:color-mix(in srgb,var(--accent) 35%,transparent)}
 </header>
 <main class="wrap">
   <div class="kicker">Studio · Docs</div>
-  <h1>Helena Piano · Pages Bridge</h1>
-  <p class="deck">md→html 목록</p>
-  <div class="meta">source · pages/ · bridge docs↔web · _Grok</div>
+  <h1>03 — S21 + proot Ubuntu 실행 가능 자산</h1>
+  <p class="deck">환경: S21 (aarch64) + Termux + proot-distro Ubuntu 26.04</p>
+  <div class="meta">source · fridge/03-s21-capabilities.md · bridge docs↔web · _Grok</div>
   <div class="appbar">
     <input type="search" id="q" placeholder="페이지 내 검색…" autocomplete="off">
     <button type="button" id="fold">접기</button>
     <button type="button" id="expand">펼치기</button>
   </div>
-  <article class="prose" id="prose"><p>이 레포의 문서 웹페이지 목록 (통일 템플릿 · _Grok).</p><ul><li><a href="CLAUDE.html">CLAUDE.html</a></li><li><a href="README.html">README.html</a></li><li><a href="bgm/README.html">bgm/README.html</a></li><li><a href="bgm/sources/README.html">bgm/sources/README.html</a></li><li><a href="fridge/01-repo-list.html">fridge/01-repo-list.html</a></li><li><a href="fridge/02-parksy-audio-inventory.html">fridge/02-parksy-audio-inventory.html</a></li><li><a href="fridge/03-s21-capabilities.html">fridge/03-s21-capabilities.html</a></li><li><a href="fridge/04-pipeline-map.html">fridge/04-pipeline-map.html</a></li><li><a href="fridge/05-youtube-catalog.html">fridge/05-youtube-catalog.html</a></li><li><a href="fridge/README.html">fridge/README.html</a></li><li><a href="pages/index.html">pages/index.html</a></li></ul></article>
+  <article class="prose" id="prose"><blockquote>
+<p>환경: S21 (aarch64) + Termux + proot-distro Ubuntu 26.04<br>
+parksy-audio 자산 중 이 폰에서 바로 돌릴 수 있는 것</p>
+</blockquote>
+<hr>
+<h2 id="python-3">✅ 즉시 실행 가능 (Python 3)</h2>
+<h3 id="midi">MIDI 처리</h3>
+<table>
+<thead>
+<tr>
+<th>스크립트</th>
+<th>기능</th>
+<th>의존성</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>local-agent/midi_crawler.py</code></td>
+<td>Public domain MIDI 크롤링</td>
+<td><code>requests, bs4</code></td>
+</tr>
+<tr>
+<td><code>local-agent/midi_sourcer.py</code></td>
+<td>MIDI 소스 검색·필터링</td>
+<td><code>requests</code></td>
+</tr>
+<tr>
+<td><code>local-agent/extract_midi.py</code></td>
+<td>YouTube→MIDI 추출</td>
+<td><code>yt-dlp, pydub</code></td>
+</tr>
+<tr>
+<td><code>local-agent/clean_midi.py</code></td>
+<td>MIDI 정리·노멀라이즈</td>
+<td><code>mido</code></td>
+</tr>
+<tr>
+<td><code>local-agent/trim_midi.py</code></td>
+<td>MIDI 앞뒤 자르기</td>
+<td><code>mido</code></td>
+</tr>
+<tr>
+<td><code>local-agent/merge_midi.py</code></td>
+<td>MIDI 트랙 병합</td>
+<td><code>mido</code></td>
+</tr>
+<tr>
+<td><code>local-agent/midi_info.py</code></td>
+<td>MIDI 메타정보 출력</td>
+<td><code>mido</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="_1">피아노 표현·인간화</h3>
+<table>
+<thead>
+<tr>
+<th>스크립트</th>
+<th>기능</th>
+<th>의존성</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>local-agent/piano_expression.py</code></td>
+<td>피아노 벨로서티·페달·타이밍 인간화</td>
+<td><code>mido</code></td>
+</tr>
+<tr>
+<td><code>local-agent/humanize_preset.py</code></td>
+<td>인간화 프리셋 적용</td>
+<td><code>mido</code></td>
+</tr>
+<tr>
+<td><code>core/humanize.py</code></td>
+<td>고급 인간화 (미세 타이밍·다이내믹)</td>
+<td><code>mido, numpy</code></td>
+</tr>
+<tr>
+<td><code>core/emotion_profile.py</code></td>
+<td>감정 태그 → 연주 파라미터 매핑</td>
+<td><code>mido</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="fluidsynth">렌더링 (FluidSynth 필수)</h3>
+<table>
+<thead>
+<tr>
+<th>스크립트</th>
+<th>기능</th>
+<th>의존성</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>pre-season/fluidsynth_render.py</code></td>
+<td>FluidSynth 호출 래퍼</td>
+<td><code>fluidsynth</code></td>
+</tr>
+<tr>
+<td><code>local-agent/run_render.py</code></td>
+<td>단일 MIDI → MP3</td>
+<td><code>fluidsynth, ffmpeg</code></td>
+</tr>
+<tr>
+<td><code>local-agent/run_render_h.py</code></td>
+<td>인간화 + 렌더링 콤보</td>
+<td><code>fluidsynth, ffmpeg, mido</code></td>
+</tr>
+<tr>
+<td><code>local-agent/run_nocturne.py</code></td>
+<td>야상곡 전용 렌더</td>
+<td><code>fluidsynth, ffmpeg</code></td>
+</tr>
+<tr>
+<td><code>engines/render_orchestral.py</code></td>
+<td>오케스트라 렌더링</td>
+<td><code>fluidsynth, ffmpeg</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="_2">오디오 후처리</h3>
+<table>
+<thead>
+<tr>
+<th>스크립트</th>
+<th>기능</th>
+<th>의존성</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>local-agent/audio_cut.py</code></td>
+<td>오디오 구간 커팅</td>
+<td><code>ffmpeg</code></td>
+</tr>
+<tr>
+<td><code>local-agent/audio_check.py</code></td>
+<td>오디오 품질 검사</td>
+<td><code>ffmpeg</code></td>
+</tr>
+<tr>
+<td><code>local-agent/check_norm.py</code></td>
+<td>LUFS 노멀라이즈 체크</td>
+<td><code>ffmpeg</code></td>
+</tr>
+<tr>
+<td><code>local-agent/make_video.py</code></td>
+<td>오디오 + 정적 이미지 → MP4</td>
+<td><code>ffmpeg</code></td>
+</tr>
+<tr>
+<td><code>local-agent/gradient_mp4.py</code></td>
+<td>그라데이션 배경 + 오디오 → MP4</td>
+<td><code>ffmpeg</code></td>
+</tr>
+<tr>
+<td><code>pre-season/pipeline/mastering.py</code></td>
+<td>마스터링 (EQ·컴프레서·리미터)</td>
+<td><code>ffmpeg, numpy</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="youtube">YouTube</h3>
+<table>
+<thead>
+<tr>
+<th>스크립트</th>
+<th>기능</th>
+<th>의존성</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>tools/youtube/upload-musician.cjs</code></td>
+<td>YouTube 업로드</td>
+<td><code>node, googleapis</code></td>
+</tr>
+<tr>
+<td><code>tools/youtube/youtube-studio.js</code></td>
+<td>YouTube Studio 제어</td>
+<td><code>node, playwright</code></td>
+</tr>
+<tr>
+<td><code>tools/youtube/auth.js</code></td>
+<td>OAuth 토큰 관리</td>
+<td><code>node, googleapis</code></td>
+</tr>
+<tr>
+<td><code>deploy/youtube_meta.py</code></td>
+<td>YouTube 메타데이터 생성</td>
+<td><code>python3</code></td>
+</tr>
+<tr>
+<td><code>scripts/fetch_youtube_stats.py</code></td>
+<td>YouTube 통계 수집</td>
+<td><code>requests</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="_3">텔레그램 봇 (핵심)</h3>
+<table>
+<thead>
+<tr>
+<th>스크립트</th>
+<th>기능</th>
+<th>의존성</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>local-agent/bot.py</code></td>
+<td><strong>메인 TG 봇</strong> — MIDI→MP3 원격 렌더링</td>
+<td><code>telebot, fluidsynth, ffmpeg, mido</code></td>
+</tr>
+<tr>
+<td><code>local-agent/server.py</code></td>
+<td>로컬 웹 서버</td>
+<td><code>flask</code></td>
+</tr>
+<tr>
+<td><code>local-agent/session_logger.py</code></td>
+<td>세션 로깅</td>
+<td><code>sqlite3</code></td>
+</tr>
+<tr>
+<td><code>deploy/telegram_notify.py</code></td>
+<td>TG 알림 전송</td>
+<td><code>requests</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="s21-npu">S21 NPU·하드웨어</h3>
+<table>
+<thead>
+<tr>
+<th>스크립트</th>
+<th>기능</th>
+<th>의존성</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>scripts/phone_npu_control.sh</code></td>
+<td>S21 NPU 발열 제어</td>
+<td><code>bash, su</code></td>
+</tr>
+<tr>
+<td><code>scripts/npu_worker.py</code></td>
+<td>NPU 워크로드 실행</td>
+<td><code>python3</code> (삼성 NPU SDK)</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="s21-proot-ubuntu">📦 설치 명령 (S21 proot Ubuntu)</h2>
+<pre><code class="language-bash"># 기본 MIDI/오디오 도구
+apt install -y fluidsynth fluid-soundfont-gm fluid-soundfont-gs ffmpeg lame
+apt install -y python3-midiutil python3-mido python3-rtmidi
+apt install -y timidity wildmidi freepats
+
+# Python 패키지
+pip install mido python-rtmidi pydub numpy requests yt-dlp
+
+# Node.js (YouTube 업로드용)
+apt install -y nodejs npm
+npm install googleapis playwright
+
+# Fluid R3 SoundFont 경로
+ls /usr/share/sounds/sf2/FluidR3_GM.sf2   # 141MB
+ls /usr/share/sounds/sf2/FluidR3_GS.sf2   # GS 확장
+</code></pre>
+<hr>
+<h2 id="_4">⚠️ 제한 사항</h2>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>이유</th>
+<th>대안</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BBCSO 샘플 (<code>labs/bbcso/</code>)</td>
+<td>라이선스·용량</td>
+<td>Fluid R3 GM으로 대체</td>
+</tr>
+<tr>
+<td>Reaper DAW (<code>reaper-templates/</code>)</td>
+<td>Windows/macOS 전용</td>
+<td>WaveformTrack (Linux DAW) 검토</td>
+</tr>
+<tr>
+<td>WSL2 전용 스크립트</td>
+<td>Windows 의존</td>
+<td>경로 수정으로 대응</td>
+</tr>
+<tr>
+<td>Playwright headful</td>
+<td>proot에서 GUI 까다로움</td>
+<td>headless 모드 사용</td>
+</tr>
+<tr>
+<td>SoVITS/XTTS 음성 합성</td>
+<td>GPU 필요, aarch64 미지원</td>
+<td>Kokoro TTS로 대체 (CPU only)</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="_5">🎯 우선순위 추천</h2>
+<ol>
+<li><strong>MIDI → MP3 렌더링</strong> — <code>fluidsynth</code> + FluidR3, 가장 기본</li>
+<li><strong>인간화</strong> — <code>piano_expression.py</code> → 기계적 MIDI를 자연스럽게</li>
+<li><strong>TG 봇</strong> — <code>bot.py</code> → 폰에서 원격으로 렌더링 요청</li>
+<li><strong>MIDI 크롤링</strong> — <code>midi_crawler.py</code> → 퍼블릭 도메인 곡 수집</li>
+<li><strong>YouTube 업로드</strong> — <code>upload-musician.cjs</code> → 자동 송출</li>
+</ol></article>
   <footer class="foot">
     <div>Helena Piano · Docs Webzine</div>
     <div class="a">모든 계정은 큰누나 명의입니다.</div>
