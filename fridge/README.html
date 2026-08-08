@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="md→html 목록">
+<meta name="description" content="**생성일**: 2026-07-28 · **조사자**: Claude Code (DTS 감사)">
 <meta name="theme-color" content="#0a0908">
-<title>Helena Piano · Pages Bridge — Helena Piano</title>
+<title>🧊 Fridge — 피아노 은하 냉장고 — Helena Piano</title>
 <link rel="icon" href="../icons/favicon-32.png" type="image/png">
 <link rel="manifest" href="../site.webmanifest">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -87,15 +87,118 @@ mark.hit{background:color-mix(in srgb,var(--accent) 35%,transparent)}
 </header>
 <main class="wrap">
   <div class="kicker">Studio · Docs</div>
-  <h1>Helena Piano · Pages Bridge</h1>
-  <p class="deck">md→html 목록</p>
-  <div class="meta">source · pages/ · bridge docs↔web · _Grok</div>
+  <h1>🧊 Fridge — 피아노 은하 냉장고</h1>
+  <p class="deck">**생성일**: 2026-07-28 · **조사자**: Claude Code (DTS 감사)</p>
+  <div class="meta">source · fridge/README.md · bridge docs↔web · _Grok</div>
   <div class="appbar">
     <input type="search" id="q" placeholder="페이지 내 검색…" autocomplete="off">
     <button type="button" id="fold">접기</button>
     <button type="button" id="expand">펼치기</button>
   </div>
-  <article class="prose" id="prose"><p>이 레포의 문서 웹페이지 목록 (통일 템플릿 · _Grok).</p><ul><li><a href="CLAUDE.html">CLAUDE.html</a></li><li><a href="README.html">README.html</a></li><li><a href="bgm/README.html">bgm/README.html</a></li><li><a href="bgm/sources/README.html">bgm/sources/README.html</a></li><li><a href="fridge/01-repo-list.html">fridge/01-repo-list.html</a></li><li><a href="fridge/02-parksy-audio-inventory.html">fridge/02-parksy-audio-inventory.html</a></li><li><a href="fridge/03-s21-capabilities.html">fridge/03-s21-capabilities.html</a></li><li><a href="fridge/04-pipeline-map.html">fridge/04-pipeline-map.html</a></li><li><a href="fridge/05-youtube-catalog.html">fridge/05-youtube-catalog.html</a></li><li><a href="fridge/README.html">fridge/README.html</a></li><li><a href="pages/index.html">pages/index.html</a></li></ul></article>
+  <article class="prose" id="prose"><blockquote>
+<p><strong>생성일</strong>: 2026-07-28 · <strong>조사자</strong>: Claude Code (DTS 감사)<br>
+<strong>대상</strong>: <code>REDACTED/parksy-audio</code> + 28개 연계 레포<br>
+<strong>목적</strong>: helena-piano 웹진에서 꺼내 쓸 수 있는 자산 전수 조사</p>
+</blockquote>
+<hr>
+<h2 id="_1">냉장고 안에 든 것</h2>
+<table>
+<thead>
+<tr>
+<th>파일</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="01-repo-list.html">01-repo-list.md</a></td>
+<td>REDACTED 소유 28개 레포 + helena751107 6개 레포 전체 목록</td>
+</tr>
+<tr>
+<td><a href="02-parksy-audio-inventory.html">02-parksy-audio-inventory.md</a></td>
+<td>parksy-audio 전 디렉토리·파일 인벤토리 (986MB)</td>
+</tr>
+<tr>
+<td><a href="03-s21-capabilities.html">03-s21-capabilities.md</a></td>
+<td>S21 + proot Ubuntu에서 실행 가능한 도구·파이프 목록</td>
+</tr>
+<tr>
+<td><a href="04-pipeline-map.html">04-pipeline-map.md</a></td>
+<td>MIDI → 렌더링 → YouTube 송출 파이프라인 지도</td>
+</tr>
+<tr>
+<td><a href="05-youtube-catalog.html">05-youtube-catalog.md</a></td>
+<td>YouTube @뮤지션박씨 39개 영상 카탈로그</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="_2">핵심 발견</h2>
+<ol>
+<li><strong>오디오 레포는 이미 존재</strong>: <code>REDACTED/parksy-audio</code> — 986MB, MIDI 렌더링·인간화·마스터링·YouTube 송출 풀스택</li>
+<li><strong>SoundFont 비교 완료</strong>: FluidR3 vs SGM-HQ vs TOH4 vs Salamander — 백조의 호수 A/B 테스트 완료</li>
+<li><strong>YouTube 실적 39건</strong>: 채널 &ldquo;뮤지션 박씨&rdquo; (<code>UCun6b2HD3ekp35PhqbTfOlg</code>)</li>
+<li><strong>S21 폰 구동 가능</strong>: <code>local-agent/</code> Python 스크립트들 — MIDI 크롤러·추출·렌더링·TG 봇</li>
+<li><strong>헬레나 피아노와 연결만 하면 완성</strong>: parksy-audio = 생산, helena-piano = 전시</li>
+</ol>
+<hr>
+<h2 id="_3">즉시 꺼내 쓸 수 있는 것</h2>
+<table>
+<thead>
+<tr>
+<th>자산</th>
+<th>위치</th>
+<th>helena-piano 연결 방안</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MIDI → MP3 렌더링</td>
+<td><code>fluidsynth</code> + FluidR3</td>
+<td>GitHub Actions / S21 proot</td>
+</tr>
+<tr>
+<td>인간화 MIDI</td>
+<td><code>piano_expression.py</code>, <code>humanize_preset.py</code></td>
+<td>배경음악 자연스럽게</td>
+</tr>
+<tr>
+<td>YouTube 업로더</td>
+<td><code>upload-musician.cjs</code></td>
+<td>Broadcast 구역 자동화</td>
+</tr>
+<tr>
+<td>TG 봇</td>
+<td><code>bot.py</code> (36KB)</td>
+<td>원격 렌더링 요청</td>
+</tr>
+<tr>
+<td>NPU 제어</td>
+<td><code>phone_npu_control.sh</code></td>
+<td>S21 발열 관리</td>
+</tr>
+<tr>
+<td>퍼블릭 도메인 MIDI</td>
+<td><code>midi_crawler.py</code>, <code>midi_sourcer.py</code></td>
+<td>연습용 악보 생성</td>
+</tr>
+<tr>
+<td>감정 프로파일</td>
+<td><code>emotion_profile.py</code> (33KB)</td>
+<td>곡 분위기 태깅</td>
+</tr>
+<tr>
+<td>멜로디 생성기</td>
+<td><code>melody_generator.py</code>, <code>zero_compose.py</code></td>
+<td>단선율 연습곡 생성</td>
+</tr>
+<tr>
+<td>화성 분석</td>
+<td>Mahler·Bruckner·Fauré 분석서</td>
+<td>레퍼토리 학습 자료</td>
+</tr>
+</tbody>
+</table></article>
   <footer class="foot">
     <div>Helena Piano · Docs Webzine</div>
     <div class="a">모든 계정은 큰누나 명의입니다.</div>
