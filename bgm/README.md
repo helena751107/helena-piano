@@ -1,7 +1,7 @@
 # 🎹 Helena Piano — BGM Studio
 
 > **모든 YouTube 채널의 배경음악 공급소**  
-> MIDI를 넣으면 Salamander Grand Piano로 렌더링된 MP3가 나옵니다.
+> MIDI를 넣으면 Fluid R3 GM으로 렌더링된 MP3가 나옵니다.
 
 ---
 
@@ -26,8 +26,7 @@
                                 │
               ┌─────────────────▼─────────────────┐
               │  GitHub Actions / S21 로컬        │
-              │  fluidsynth + Salamander Grand    │
-              │  Piano SF2 (Yamaha C5, 16 vel.)   │
+              │  fluidsynth + Fluid R3 GM         │
               │  MIDI → WAV → MP3 (192kbps)       │
               └─────────────────┬─────────────────┘
                                 │
@@ -82,21 +81,17 @@ bgm/
 # proot Ubuntu에서
 apt install fluidsynth ffmpeg fluid-soundfont-gm
 
-# Salamander SoundFont 다운로드 (1회)
-wget -O bgm/salamander.sf2 \
-  https://github.com/sfzinstruments/SalamanderGrandPiano/releases/download/v3/salamander-grand-piano-v3.sf2
-
-# 렌더링
+# 렌더링 (기본: Fluid R3 GM)
 bash bgm/scripts/render.sh                    # 전체
 bash bgm/scripts/render.sh moonlight.mid       # 특정 파일
-bash bgm/scripts/render.sh --soundfont fluidr3 # Fluid R3 로
+bash bgm/scripts/render.sh --soundfont fluidr3 # Fluid R3 로 (기본과 동일)
 ```
 
 ### MIDI → MP3 한 줄
 
 ```bash
-fluidsynth -ni -g 1.5 -r 44100 salamander.sf2 input.mid -F output.wav
-ffmpeg -i output.wav -b:a 192k output.mp3
+fluidsynth -ni -g 1.5 -r 44100 /usr/share/sounds/sf2/FluidR3_GM.sf2 input.mid -F output.wav
+ffmpeg -i output.wav -b:a 320k output.mp3
 ```
 
 ---
@@ -105,11 +100,16 @@ ffmpeg -i output.wav -b:a 192k output.mp3
 
 | SoundFont | 피아노 음색 | 크기 | 라이선스 | 특징 |
 |-----------|------------|------|----------|------|
-| **Salamander Grand Piano** | Yamaha C5 | 244MB | MIT | 16단계 벨로서티, 실제 녹음 |
-| Fluid R3 GM | Steinway 샘플 | 141MB | MIT | 128악기, 범용 |
+| **Fluid R3 GM** | Steinway 샘플 | 141MB | MIT | 128악기, 범용 (fluidsynth 100% 호환) |
+| ~~Salamander Grand Piano~~ | Yamaha C5 | 244MB | MIT | ⚠️ SFZ2+ARIA 확장 → fluidsynth 비호환 |
 | TimGM6mb | GM 기본 | 6MB | GPL | 경량, 저품질 |
 
-**BGM Studio 기본값: Salamander Grand Piano** (피아노 특화)
+**BGM Studio 기본값: Fluid R3 GM** (피아노 특화)
+
+> **왜 Salamander 를 안 쓰나?** Salamander Grand Piano v3 는 SFZ2 + ARIA 확장
+> (keyswitch·note-selfmasking 등)으로 **Plogue sforzando 전용**이다. fluidsynth 는 ARIA
+> opcode 를 지원하지 않아 로드해도 제대로 울리지 않는다. → CI(render-bgm.yml)와 로컬
+> 렌더 모두 Fluid R3 GM 으로 통일했다 (2026-08-16).
 
 ---
 
@@ -149,6 +149,5 @@ https://helena751107.github.io/helena-piano/bgm/output/{곡명}.mp3
 
 - **MIDI 파일**: 각 소스 라이선스 확인 (Public Domain / CC0 / CC-BY)
 - **렌더링된 MP3**: SoundFont 라이선스에 따름
-  - Salamander Grand Piano: MIT → 자유 사용
   - Fluid R3 GM: MIT → 자유 사용
 - **BGM Studio 코드**: MIT

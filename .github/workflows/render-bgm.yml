@@ -16,87 +16,28 @@ env:
 jobs:
   render:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
 
-      - name: Cache Salamander SF2
-        uses: actions/cache@v4
-        id: sf-cache
-        with:
-          path: /tmp/salamander.sf2
-          key: salamander-grand-piano-v3-sf2
-
-      - name: Build Salamander SF2 from source
-        if: steps.sf-cache.outputs.cache-hit != 'true'
-        run: |
-          echo "🔨 Building Salamander Grand Piano SF2..."
-
-          # 1. Download SFZ definition + samples (~500MB tar)
-          echo "⬇️ Downloading samples (44.1kHz 16bit)..."
-          wget -q --show-progress -O /tmp/salamander.tar \
-            "https://archive.org/download/SalamanderGrandPianoV3/SalamanderGrandPianoV3_44.1khz16bit.tar" \
-            || { echo "❌ Download failed"; exit 1; }
-
-          # 2. Extract
-          echo "📦 Extracting samples..."
-          mkdir -p /tmp/salamander_src
-          tar -xf /tmp/salamander.tar -C /tmp/salamander_src/
-          rm /tmp/salamander.tar
-
-          # 3. Download SFZ definition
-          wget -q -O /tmp/salamander_src/salamander.sfz \
-            "https://raw.githubusercontent.com/sfzinstruments/SalamanderGrandPiano/master/Salamander%20Grand%20Piano%20V3.sfz"
-
-          # 4. Install tools
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq fluidsynth ffmpeg
-
-          # 5. Convert SFZ+FLAC → SF2 using fluidsynth's built-in SFZ loader
-          # fluidsynth 2.x can load SFZ via instpatch. Create a minimal SF2 wrapper.
-          # Alternative: render SFZ directly to WAV using fluidsynth.
-
-          # Test: load SFZ and render a quick test
-          echo "🎹 Testing SFZ render..."
-          ls /tmp/salamander_src/ | head -10
-          echo "SFZ path: /tmp/salamander_src/salamander.sfz"
-
-          # Since building SF2 is complex, we'll render from SFZ directly each time
-          # Cache the extracted samples folder instead
-          echo "build_done=true" >> /tmp/salamander_build.env
-
-      - name: Install FluidSynth + FFmpeg
+      # SoundFont 결정:
+      # - Salamander Grand Piano v3 는 SFZ2 + ARIA 확장(keyswitch·note-selfmasking 등)으로
+      #   Plogue sforzando 전용. fluidsynth 는 ARIA opcode 를 지원하지 않아 로드해도 제대로
+      #   안 울림. 또한 archive.org 샘플 URL 이 `.tar` 로 잘못돼 404 → 빌드 스텝 자체가 실패.
+      #   → fluidsynth 와 100% 호환되는 Fluid R3 GM 으로 렌더한다 (결정: 2026-08-16).
+      - name: Install FluidSynth + FFmpeg + Fluid R3 GM
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y -qq fluidsynth ffmpeg
+          sudo apt-get install -y -qq fluidsynth ffmpeg fluid-soundfont-gm
           echo "✅ FluidSynth $(fluidsynth --version | head -1)"
+          ls -lh /usr/share/sounds/sf2/FluidR3_GM.sf2
 
       - name: Render MIDI → MP3
         run: |
-          SF=""
-          SF_NAME=""
-
-          # Priority: Salamander > Fluid R3
-          if [ -f /tmp/salamander.sf2 ] && [ -s /tmp/salamander.sf2 ]; then
-            SF="/tmp/salamander.sf2"
-            SF_NAME="Salamander Grand Piano (Yamaha C5)"
-          elif [ -d /tmp/salamander_src ]; then
-            echo "⚠ Salamander SF2 not built yet — downloading Fluid R3 as fallback"
-            sudo apt-get install -y -qq fluid-soundfont-gm
-            SF="/usr/share/sounds/sf2/FluidR3_GM.sf2"
-            SF_NAME="Fluid R3 GM (fallback)"
-          elif [ -f bgm/salamander.sf2 ] && [ -s bgm/salamander.sf2 ]; then
-            SF="bgm/salamander.sf2"
-            SF_NAME="Salamander Grand Piano (local)"
-          else
-            sudo apt-get install -y -qq fluid-soundfont-gm
-            SF="/usr/share/sounds/sf2/FluidR3_GM.sf2"
-            SF_NAME="Fluid R3 GM"
-          fi
+          SF="/usr/share/sounds/sf2/FluidR3_GM.sf2"
+          SF_NAME="Fluid R3 GM"
 
           echo "🎹 SoundFont: $SF_NAME"
-          ls -lh "$SF" 2>/dev/null || echo "(SF2 path: $SF)"
-
           mkdir -p "$OUTPUT_DIR"
           count=0
 
@@ -106,7 +47,7 @@ jobs:
             wav="$OUTPUT_DIR/$name.wav"
             mp3="$OUTPUT_DIR/$name.mp3"
 
-            echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+            echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
             echo "🎵 $name"
 
             # Fast render — bypass audio driver

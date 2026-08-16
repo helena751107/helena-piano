@@ -23,7 +23,7 @@ OUT_DIR="$BGM_DIR/output"
 GAIN=1.5
 SAMPLE_RATE=44100
 MP3_BITRATE=192k
-SOUNDFONT="salamander"
+SOUNDFONT="fluidr3"
 SF_PATH=""
 
 mkdir -p "$OUT_DIR"
@@ -42,29 +42,14 @@ while [ $# -gt 0 ]; do
 done
 
 # ── SoundFont 찾기 ────────────────────────────────────────
+# Fluid R3 GM (Salamander v3 는 SFZ2+ARIA 확장 → fluidsynth 비호환, 2026-08-16 결정)
 find_soundfont() {
-  case "$SOUNDFONT" in
-    salamander)
-      # Salamander Grand Piano (Yamaha C5, 16 velocity layers)
-      for p in \
-        "$BGM_DIR/salamander.sf2" \
-        "/usr/share/sounds/sf2/SalamanderGrandPiano.sf2" \
-        "$HOME/.local/share/sounds/sf2/salamander.sf2" \
-        "/tmp/salamander.sf2"; do
-        if [ -f "$p" ]; then SF_PATH="$p"; return 0; fi
-      done
-      echo "⚠ Salamander 없음 → Fluid R3로 fallback"
-      SOUNDFONT="fluidr3"
-      ;;&
-    fluidr3|*)
-      for p in \
-        "/usr/share/sounds/sf2/FluidR3_GM.sf2" \
-        "/usr/share/sounds/sf2/FluidR3_GS.sf2" \
-        "/usr/share/sounds/sf2/TimGM6mb.sf2"; do
-        if [ -f "$p" ]; then SF_PATH="$p"; return 0; fi
-      done
-      ;;
-  esac
+  for p in \
+    "/usr/share/sounds/sf2/FluidR3_GM.sf2" \
+    "/usr/share/sounds/sf2/FluidR3_GS.sf2" \
+    "/usr/share/sounds/sf2/TimGM6mb.sf2"; do
+    if [ -f "$p" ]; then SF_PATH="$p"; return 0; fi
+  done
 
   if [ -z "$SF_PATH" ]; then
     echo "❌ SoundFont 없음. 설치:"
