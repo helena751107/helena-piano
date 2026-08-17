@@ -3,6 +3,8 @@
 > A high-end classical-music webzine, rendered and served from an old Galaxy S21:
 > piano music produced on-device (tech), plus listening, reviews, and interviews (magazine).
 >
+> Part of the [**Helena Content Foundry**](https://github.com/helena751107/helena_phone) — mobile-first, MCP-verified.
+>
 > _Korean below = the full worked example._
 
 ---
