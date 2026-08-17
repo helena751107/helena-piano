@@ -1,3 +1,12 @@
+# Helena Piano — a classical webzine on one phone
+
+> A high-end classical-music webzine, rendered and served from an old Galaxy S21:
+> piano music produced on-device (tech), plus listening, reviews, and interviews (magazine).
+>
+> _Korean below = the full worked example._
+
+---
+
 # Helena Piano — 폰 한 대로 만드는 클래식 웹진
 
 > **구형 S21에서 피아노 음악을 직접 렌더링하고, 그 위에 클래식 웹진을 올린다.**
