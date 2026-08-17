@@ -1,0 +1,7 @@
+# Helena Piano — a classical-music webzine on one phone
+
+> A classical-music webzine from the Helena Content Foundry: piano rendered on-device, reviews and interviews. Built on one Galaxy S21, spoken into a terminal. Part of the aspiration track.
+
+- [Repository](https://github.com/helena751107/helena-piano)
+- [Live site (Korean)](https://helena751107.github.io/helena-piano/)
+- [README](https://github.com/helena751107/helena-piano#readme)
