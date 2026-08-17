@@ -1,5 +1,7 @@
 # Helena Piano — a classical webzine on one phone
 
+![Helena Piano — a classical webzine rendered on one phone](assets/social-preview.jpg)
+
 > A high-end classical-music webzine, rendered and served from an old Galaxy S21:
 > piano music produced on-device (tech), plus listening, reviews, and interviews (magazine).
 >
