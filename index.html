@@ -161,6 +161,12 @@ button{font:inherit;color:inherit;background:none;border:none;cursor:none}
 .cover-stats .v{font-family:var(--serif);font-size:clamp(1.5rem,3vw,2.1rem);font-weight:700;color:var(--lilac-bright);line-height:1}
 .cover-stats .l{font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-mute);margin-top:8px}
 
+.hero-shot{position:relative;margin:0 0 clamp(28px,5vw,52px);border:1px solid var(--rule-strong);overflow:hidden;background:var(--paper-2)}
+.hero-shot img{width:100%;height:auto;display:block;filter:saturate(1.05) contrast(1.03)}
+.hero-shot .cap{position:absolute;left:14px;bottom:14px;font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-bright);background:rgba(10,9,8,.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);padding:7px 11px;border:1px solid var(--rule-strong)}
+[data-theme="light"] .hero-shot .cap{color:var(--gold);background:rgba(255,253,248,.72)}
+@media(max-width:640px){.hero-shot .cap{font-size:.6rem;padding:6px 9px;left:10px;bottom:10px}}
+
 .marquee-wrap{overflow:hidden;border-block:1px solid var(--rule);background:var(--paper-2);padding:14px 0}
 .marquee{display:flex;width:max-content;animation:marquee 42s linear infinite;font-size:.75rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-mute);font-weight:500}
 .marquee span{padding:0 28px;white-space:nowrap}
@@ -429,6 +435,13 @@ section.chapter.acc .acc-panel.open > .acc-inner{opacity:1;padding-bottom:clamp(
     </div>
   </div>
 </section>
+
+<div class="shell">
+  <div class="hero-shot reveal">
+    <img src="assets/hero-web.jpg" width="1152" height="1728" loading="eager" alt="A Galaxy S21 phone glowing on a grand piano keyboard, golden musical notes rising off the keys into the dark — the one-phone studio where Helena Piano is made.">
+    <div class="cap">Helena Piano · The Studio</div>
+  </div>
+</div>
 
 <div class="marquee-wrap" aria-hidden="true">
   <div class="marquee">
