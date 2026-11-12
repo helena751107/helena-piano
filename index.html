@@ -345,6 +345,7 @@ section.chapter.acc .acc-panel.open > .acc-inner{opacity:1;padding-bottom:clamp(
 }
 
 </style>
+<link rel="stylesheet" href="ontoviz/onto.css">
 </head>
 <body>
 <div class="cursor" id="cursor" aria-hidden="true"></div>
@@ -901,6 +902,11 @@ section.chapter.acc .acc-panel.open > .acc-inner{opacity:1;padding-bottom:clamp(
   })();
 
 })();
+</script>
+<script type="importmap">{"imports":{"three":"./ontoviz/vendor/three/build/three.webgpu.js","three/webgpu":"./ontoviz/vendor/three/build/three.webgpu.js","three/tsl":"./ontoviz/vendor/three/build/three.tsl.js","three/addons/":"./ontoviz/vendor/three/examples/jsm/"}}</script>
+<script type="module">
+  import { initOnto } from './ontoviz/onto.js';
+  initOnto().catch((e) => console.warn('[piano] 3D layer unavailable — the text webzine still works:', e && e.message));
 </script>
 </body>
 </html>

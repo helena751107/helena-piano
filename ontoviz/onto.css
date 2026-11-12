@@ -1,0 +1,63 @@
+/* HELENA PIANO 3D — the canvas is the page. No floating HTML dashboard. */
+
+html[data-onto="on"] { scroll-behavior: auto; background: #08070c; }
+html[data-onto="on"] body { margin: 0; background: #08070c; cursor: default; }
+html[data-onto="on"] canvas { cursor: default; }
+
+/* the walk needs a scrollbar, but it should not be a white pole on black */
+html[data-onto="on"] { scrollbar-width: thin; scrollbar-color: rgba(139,124,240,.34) transparent; }
+html[data-onto="on"]::-webkit-scrollbar { width: 8px; }
+html[data-onto="on"]::-webkit-scrollbar-track { background: rgba(8,7,12,.9); }
+html[data-onto="on"]::-webkit-scrollbar-thumb { background: rgba(139,124,240,.32); border-radius: 8px; }
+html[data-onto="on"]::-webkit-scrollbar-thumb:hover { background: rgba(139,124,240,.52); }
+
+/* the 3D layer owns the screen: everything the webzine put there steps aside */
+html[data-onto="on"] body > *:not(.onto):not(script):not(style):not(link) { display: none !important; }
+
+.onto { position: relative; z-index: 1; }
+
+#ontoGl {
+  position: fixed; inset: 0; z-index: 0;
+  background: #08070c;
+}
+#ontoGl canvas {
+  display: block; width: 100% !important; height: 100% !important;
+  background: #08070c;
+  touch-action: pan-y;
+}
+.ov-scroll { width: 1px; height: 800vh; pointer-events: none; }
+
+html[data-onto="off"] .onto { display: none !important; }
+
+/* node hover tooltip from the GPU graph runtime */
+.scene-tooltip {
+  background: rgba(8,7,12,.92);
+  border: 1px solid rgba(139,124,240,.45);
+  padding: 7px 10px;
+  font: 500 10px/1.4 "JetBrains Mono", ui-monospace, monospace;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: #f4efe6;
+  box-shadow: 0 18px 44px -22px rgba(0,0,0,.95);
+  backdrop-filter: blur(8px);
+}
+
+/* text-mode skip link: invisible unless focused */
+.ov-sr {
+  position: fixed; left: 12px; top: 12px; z-index: 50;
+  padding: 10px 14px;
+  background: #f4efe6; color: #0a0908;
+  font: 500 12px/1 "JetBrains Mono", ui-monospace, monospace;
+  letter-spacing: .08em; text-transform: uppercase;
+  transform: translateY(-180%);
+  transition: transform .18s ease;
+}
+.ov-sr:focus { transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ov-sr { transition: none; }
+}
+
+/* MCP dock sits above the 3D scene when opened by a tool */
+html[data-onto="on"] .wmcp { left: auto; right: 16px; bottom: 16px; }
+html[data-onto="on"] .wmcp-seal { display: none; }
